@@ -3,4 +3,6 @@
     <string name="fav_description">Add shopping item</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
+    <string name="undo">Undo</string>
+    <string name="removed">is removed</string>
 </resources>
