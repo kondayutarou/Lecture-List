@@ -27,17 +27,10 @@ class MainActivity : AppCompatActivity() {
 
     @Inject
     lateinit var db: AppDatabase
-    private val shoppingList = BehaviorRelay.create<MutableList<ShoppingListItem>>()
+    private val shoppingList = BehaviorRelay.createDefault(mutableListOf<ShoppingListItem>())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val list = mutableListOf<ShoppingListItem>()
-        list.add(ShoppingListItem(UUID.randomUUID().toString(), "a", false))
-        list.add(ShoppingListItem(UUID.randomUUID().toString(), "b", true))
-        list.add(ShoppingListItem(UUID.randomUUID().toString(), "c", false))
-        list.add(ShoppingListItem(UUID.randomUUID().toString(), "d", true))
-        shoppingList.accept(list)
-
         initView()
     }
 
