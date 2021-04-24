@@ -6,11 +6,14 @@ import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxrelay3.BehaviorRelay
 import com.shoppinglist.databinding.ActivityMainBinding
 import com.shoppinglist.databinding.DialogueAddBinding
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 import javax.inject.Inject
 
@@ -40,6 +43,7 @@ class MainActivity : AppCompatActivity() {
         val recyclerView = binding.recyclerView.also {
             it.layoutManager = LinearLayoutManager(this)
             it.adapter = MainRecyclerViewAdapter(this, shoppingList.value)
+            setTouchGestureOnRecyclerView().attachToRecyclerView(it)
         }
 
         val fab = binding.fab.also {
@@ -47,6 +51,32 @@ class MainActivity : AppCompatActivity() {
                 buildDialogue(this).show()
             }
         }
+    }
+
+    private fun setTouchGestureOnRecyclerView(): ItemTouchHelper {
+        return ItemTouchHelper(
+            object : ItemTouchHelper.SimpleCallback(
+                ItemTouchHelper.LEFT, ItemTouchHelper.RIGHT
+            ) {
+                override fun onMove(
+                    recyclerView: RecyclerView,
+                    viewHolder: RecyclerView.ViewHolder,
+                    target: RecyclerView.ViewHolder
+                ): Boolean {
+                    return false
+                }
+
+                override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                    if (direction == ItemTouchHelper.RIGHT) {
+                        val position = viewHolder.adapterPosition
+                        val value = shoppingList.value
+                        value.remove(value[position])
+                        shoppingList.accept(value)
+                        recyclerView.adapter?.notifyItemRemoved(position)
+                    }
+                }
+            })
+
     }
 
     private fun buildDialogue(activity: Activity): AlertDialog {
