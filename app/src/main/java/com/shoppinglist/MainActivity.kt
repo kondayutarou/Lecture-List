@@ -12,9 +12,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.jakewharton.rxrelay3.BehaviorRelay
+import com.orhanobut.logger.Logger
 import com.shoppinglist.databinding.ActivityMainBinding
 import com.shoppinglist.databinding.DialogueAddBinding
 import dagger.hilt.android.AndroidEntryPoint
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.kotlin.addTo
 import io.reactivex.rxjava3.schedulers.Schedulers
@@ -83,7 +85,20 @@ class MainActivity : AppCompatActivity() {
                         value.remove(deletedItem)
                         shoppingList.accept(value)
                         recyclerView.adapter?.notifyItemRemoved(position)
-                        showSnackBar()
+                        deletedItem?.let { item ->
+                            db.shoppingListItemDao().delete(item)
+                                .subscribeOn(Schedulers.computation())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(
+                                    {
+                                    },
+                                    { error ->
+                                        Logger.d(error.localizedMessage)
+                                    }
+                                )
+                                .addTo(compositeDisposable)
+                            showSnackBar()
+                        }
                     }
                 }
 
@@ -109,20 +124,41 @@ class MainActivity : AppCompatActivity() {
     private fun buildDialogue(activity: Activity): AlertDialog {
         val builder: AlertDialog.Builder = AlertDialog.Builder(activity).also {
             val dialogueBinding = DialogueAddBinding.inflate(LayoutInflater.from(this))
+            val dialogueDisposable: CompositeDisposable = CompositeDisposable()
             it.setView(dialogueBinding.root)
-            it.setPositiveButton(R.string.ok) { _, _ ->
+            it.setPositiveButton(R.string.ok) { dialogInterface, _ ->
                 val value = shoppingList.value
                 val inputString = dialogueBinding.textInput.text.toString()
                 if (inputString.isNotEmpty()) {
-                    value.add(ShoppingListItem(UUID.randomUUID().toString(), inputString, false))
+                    val item = ShoppingListItem(UUID.randomUUID().toString(), inputString, false)
+                    value.add(item)
                     shoppingList.accept(value)
+                    db.shoppingListItemDao().insert(item)
+                        .subscribeOn(Schedulers.computation())
+                        .subscribe(
+                            {
+                                dialogInterface.dismiss()
+                            },
+                            { error ->
+                                Logger.d(error.localizedMessage)
+                            }
+                        )
+                        .addTo(dialogueDisposable)
                 }
             }
             it.setNegativeButton(R.string.cancel) { dialogInterface, _ ->
                 dialogInterface.dismiss()
             }
+            it.setOnDismissListener {
+                dialogueDisposable.dispose()
+            }
         }
 
         return builder.create()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        compositeDisposable.dispose()
     }
 }
