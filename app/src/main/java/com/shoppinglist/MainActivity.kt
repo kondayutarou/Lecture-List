@@ -15,6 +15,9 @@ import com.jakewharton.rxrelay3.BehaviorRelay
 import com.shoppinglist.databinding.ActivityMainBinding
 import com.shoppinglist.databinding.DialogueAddBinding
 import dagger.hilt.android.AndroidEntryPoint
+import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.kotlin.addTo
+import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 import javax.inject.Inject
@@ -24,6 +27,7 @@ class MainActivity : AppCompatActivity() {
     private val binding: ActivityMainBinding by lazy {
         DataBindingUtil.setContentView(this, R.layout.activity_main)
     }
+    private lateinit var compositeDisposable: CompositeDisposable
 
     @Inject
     lateinit var db: AppDatabase
@@ -31,6 +35,13 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        compositeDisposable = CompositeDisposable()
+        db.shoppingListItemDao().getAll()
+            .observeOn(Schedulers.computation())
+            .subscribe { list ->
+                shoppingList.accept(list as MutableList<ShoppingListItem>)
+            }
+            .addTo(compositeDisposable)
         initView()
     }
 
