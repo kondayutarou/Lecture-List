@@ -1,10 +1,11 @@
-package com.shoppinglist
+package com.shoppinglist.view
 
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.shoppinglist.ShoppingListItem
 import com.shoppinglist.databinding.MainRecyclerCellBinding
 import kotlinx.android.synthetic.main.main_recycler_cell.view.*
 
