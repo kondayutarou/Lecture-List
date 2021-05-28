@@ -11,15 +11,12 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
-import com.orhanobut.logger.Logger
 import com.shoppinglist.R
 import com.shoppinglist.ShoppingListItem
 import com.shoppinglist.databinding.ActivityMainBinding
 import com.shoppinglist.databinding.DialogueAddBinding
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.disposables.CompositeDisposable
-import io.reactivex.rxjava3.kotlin.addTo
-import io.reactivex.rxjava3.schedulers.Schedulers
 import java.util.*
 import javax.inject.Inject
 
@@ -113,17 +110,7 @@ class MainActivity : AppCompatActivity() {
                     val item = ShoppingListItem(UUID.randomUUID().toString(), inputString, false)
                     value.add(item)
                     viewModel.shoppingList.accept(value)
-                    viewModel.db.shoppingListItemDao().insert(item)
-                        .subscribeOn(Schedulers.computation())
-                        .subscribe(
-                            {
-                                dialogInterface.dismiss()
-                            },
-                            { error ->
-                                Logger.d(error.localizedMessage)
-                            }
-                        )
-                        .addTo(dialogueDisposable)
+                    viewModel.insertItem(item)
                 }
             }
             it.setNegativeButton(R.string.cancel) { dialogInterface, _ ->

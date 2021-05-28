@@ -1,8 +1,8 @@
 package com.shoppinglist.view
 
-import android.content.Context
 import androidx.lifecycle.ViewModel
 import com.jakewharton.rxrelay3.BehaviorRelay
+import com.jakewharton.rxrelay3.PublishRelay
 import com.orhanobut.logger.Logger
 import com.shoppinglist.AppDatabase
 import com.shoppinglist.ShoppingListItem
@@ -18,6 +18,7 @@ class MainViewModel @Inject constructor(
 
     val shoppingList = BehaviorRelay.createDefault(mutableListOf<ShoppingListItem>())
     private lateinit var compositeDisposable: CompositeDisposable
+    val insertItemSuccess: PublishRelay<Boolean> = PublishRelay.create()
 
     fun start() {
         compositeDisposable = CompositeDisposable()
@@ -30,6 +31,20 @@ class MainViewModel @Inject constructor(
             .subscribe { list ->
                 shoppingList.accept(list as MutableList<ShoppingListItem>)
             }
+            .addTo(compositeDisposable)
+    }
+
+    fun insertItem(itemToInsert: ShoppingListItem) {
+        db.shoppingListItemDao().insert(itemToInsert)
+            .subscribeOn(Schedulers.computation())
+            .subscribe(
+                {
+                    insertItemSuccess.accept(true)
+                },
+                { error ->
+                    Logger.d(error.localizedMessage)
+                }
+            )
             .addTo(compositeDisposable)
     }
 
