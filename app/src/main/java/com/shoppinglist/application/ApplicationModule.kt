@@ -1,7 +1,8 @@
-package com.shoppinglist
+package com.shoppinglist.application
 
 import android.content.Context
 import androidx.room.Room
+import com.shoppinglist.AppDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

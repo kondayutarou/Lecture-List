@@ -1,4 +1,4 @@
-package com.shoppinglist
+package com.shoppinglist.view
 
 import android.app.Activity
 import android.os.Bundle
@@ -13,6 +13,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.jakewharton.rxrelay3.BehaviorRelay
 import com.orhanobut.logger.Logger
+import com.shoppinglist.AppDatabase
+import com.shoppinglist.R
+import com.shoppinglist.ShoppingListItem
 import com.shoppinglist.databinding.ActivityMainBinding
 import com.shoppinglist.databinding.DialogueAddBinding
 import dagger.hilt.android.AndroidEntryPoint
