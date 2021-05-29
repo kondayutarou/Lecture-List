@@ -4,15 +4,11 @@ import androidx.lifecycle.ViewModel
 import com.jakewharton.rxrelay3.BehaviorRelay
 import com.jakewharton.rxrelay3.PublishRelay
 import com.orhanobut.logger.Logger
-import com.shoppinglist.AppDatabase
-import com.shoppinglist.ShoppingListItem
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.core.Completable
+import com.shoppinglist.model.AppDatabase
+import com.shoppinglist.model.ShoppingListItem
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.kotlin.addTo
-import io.reactivex.rxjava3.kotlin.withLatestFrom
 import io.reactivex.rxjava3.schedulers.Schedulers
-import java.util.function.BiFunction
 import javax.inject.Inject
 
 class MainViewModel @Inject constructor(

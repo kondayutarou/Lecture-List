@@ -1,16 +1,22 @@
-package com.shoppinglist
+package com.shoppinglist.model
 
 import androidx.room.*
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Maybe
 import io.reactivex.rxjava3.core.Observable
 
+interface ShoppingListItemInterface {
+    val uuid: String
+    val name: String
+    var checked: Boolean
+}
+
 @Entity
 data class ShoppingListItem(
-    @PrimaryKey val uuid: String,
-    @ColumnInfo(name = "name") val name: String,
-    @ColumnInfo(name = "checked") var checked: Boolean
-)
+    @PrimaryKey override val uuid: String,
+    @ColumnInfo(name = "name") override val name: String,
+    @ColumnInfo(name = "checked") override var checked: Boolean
+) : ShoppingListItemInterface
 
 @Dao
 interface ShoppingListItemDao {
