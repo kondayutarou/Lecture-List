@@ -35,6 +35,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initView() {
+        binding.viewModel = viewModel
         binding.recyclerView.apply {
             this.layoutManager = LinearLayoutManager(this@MainActivity)
             this.adapter = MainRecyclerViewAdapter(this@MainActivity, viewModel.shoppingList.value)
@@ -45,10 +46,6 @@ class MainActivity : AppCompatActivity() {
             this.setOnClickListener {
                 buildDialogue(this@MainActivity).show()
             }
-        }
-
-        binding.favSave.setOnClickListener {
-            viewModel.saveAll()
         }
     }
 
