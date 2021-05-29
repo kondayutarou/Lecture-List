@@ -1,6 +1,7 @@
 package com.shoppinglist
 
 import androidx.room.*
+import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Maybe
 import io.reactivex.rxjava3.core.Observable
 import java.util.*
@@ -20,8 +21,14 @@ interface ShoppingListItemDao {
     @Insert
     fun insert(vararg shoppingListItem: ShoppingListItem): Maybe<Void>
 
+    @Insert
+    fun insertAll(items: List<ShoppingListItem>): Completable
+
     @Delete
     fun delete(shoppingListItem: ShoppingListItem): Maybe<Void>
+
+    @Query("DELETE FROM shoppinglistitem")
+    fun deleteAll(): Completable
 }
 
 @Database(entities = arrayOf(ShoppingListItem::class), version = 1, exportSchema = false)

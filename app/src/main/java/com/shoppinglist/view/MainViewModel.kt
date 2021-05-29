@@ -7,9 +7,12 @@ import com.orhanobut.logger.Logger
 import com.shoppinglist.AppDatabase
 import com.shoppinglist.ShoppingListItem
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.kotlin.addTo
+import io.reactivex.rxjava3.kotlin.withLatestFrom
 import io.reactivex.rxjava3.schedulers.Schedulers
+import java.util.function.BiFunction
 import javax.inject.Inject
 
 class MainViewModel @Inject constructor(
@@ -59,6 +62,16 @@ class MainViewModel @Inject constructor(
                     Logger.d(error.localizedMessage)
                 }
             )
+            .addTo(compositeDisposable)
+    }
+
+    fun saveAll() {
+        db.shoppingListItemDao().deleteAll()
+            .concatWith(db.shoppingListItemDao().insertAll(shoppingList.value))
+            .subscribeOn(Schedulers.computation())
+            .subscribe {
+                Logger.d("Database rewrite complete")
+            }
             .addTo(compositeDisposable)
     }
 

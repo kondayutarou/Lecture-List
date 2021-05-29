@@ -41,10 +41,14 @@ class MainActivity : AppCompatActivity() {
             setTouchGestureOnRecyclerView().attachToRecyclerView(this)
         }
 
-        binding.fab.apply {
+        binding.fabAdd.apply {
             this.setOnClickListener {
                 buildDialogue(this@MainActivity).show()
             }
+        }
+
+        binding.favSave.setOnClickListener {
+            viewModel.saveAll()
         }
     }
 
