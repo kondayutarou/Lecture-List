@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import com.jakewharton.rxrelay3.BehaviorRelay
 import com.jakewharton.rxrelay3.PublishRelay
 import com.orhanobut.logger.Logger
-import com.shoppinglist.model.AppDatabase
-import com.shoppinglist.model.ShoppingListItem
+import com.shoppinglist.data.ShoppingListItem
+import com.shoppinglist.data.source.local.AppDatabase
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.kotlin.addTo
 import io.reactivex.rxjava3.schedulers.Schedulers

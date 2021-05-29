@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxrelay3.BehaviorRelay
 import com.shoppinglist.databinding.MainRecyclerCellBinding
-import com.shoppinglist.model.ShoppingListItem
+import com.shoppinglist.data.ShoppingListItem
 import kotlinx.android.synthetic.main.main_recycler_cell.view.*
 
 class MainRecyclerViewAdapter(
