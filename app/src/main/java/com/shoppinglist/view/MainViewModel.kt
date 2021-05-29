@@ -16,10 +16,10 @@ import java.util.function.BiFunction
 import javax.inject.Inject
 
 class MainViewModel @Inject constructor(
-    val db: AppDatabase
+    private val db: AppDatabase
 ) : ViewModel() {
 
-    val shoppingList = BehaviorRelay.createDefault(mutableListOf<ShoppingListItem>())
+    val shoppingList: BehaviorRelay<MutableList<ShoppingListItem>> = BehaviorRelay.createDefault(mutableListOf())
     private lateinit var compositeDisposable: CompositeDisposable
     val insertItemSuccess: PublishRelay<Boolean> = PublishRelay.create()
 

@@ -16,7 +16,9 @@ import com.shoppinglist.ShoppingListItem
 import com.shoppinglist.databinding.ActivityMainBinding
 import com.shoppinglist.databinding.DialogueAddBinding
 import dagger.hilt.android.AndroidEntryPoint
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.kotlin.addTo
 import java.util.*
 import javax.inject.Inject
 
@@ -27,6 +29,7 @@ class MainActivity : AppCompatActivity() {
     }
     @Inject
     lateinit var viewModel: MainViewModel
+    private val compositeDisposable = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,6 +50,17 @@ class MainActivity : AppCompatActivity() {
                 buildDialogue(this@MainActivity).show()
             }
         }
+
+        observeItemChange()
+    }
+
+    private fun observeItemChange() {
+        viewModel.shoppingList
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                binding.recyclerView.adapter?.notifyDataSetChanged()
+            }
+            .addTo(compositeDisposable)
     }
 
     private fun setTouchGestureOnRecyclerView(): ItemTouchHelper {
@@ -72,7 +86,6 @@ class MainActivity : AppCompatActivity() {
                         deletedItem = value[position]
                         value.remove(deletedItem)
                         viewModel.shoppingList.accept(value)
-                        binding.recyclerView.adapter?.notifyItemRemoved(position)
                         deletedItem?.let { item ->
                             showSnackBar()
                         }
@@ -91,7 +104,6 @@ class MainActivity : AppCompatActivity() {
                             val item = deletedItem ?: return@OnClickListener
                             value.add(position, item)
                             viewModel.shoppingList.accept(value)
-                            binding.recyclerView.adapter?.notifyItemInserted(position)
                         })
                         .show()
                 }
@@ -126,5 +138,6 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         viewModel.finish()
+        compositeDisposable.clear()
     }
 }
