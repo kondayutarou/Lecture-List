@@ -7,16 +7,19 @@ import com.orhanobut.logger.Logger
 import com.shoppinglist.AppDatabase
 import com.shoppinglist.ShoppingListItem
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.kotlin.addTo
+import io.reactivex.rxjava3.kotlin.withLatestFrom
 import io.reactivex.rxjava3.schedulers.Schedulers
+import java.util.function.BiFunction
 import javax.inject.Inject
 
 class MainViewModel @Inject constructor(
-    val db: AppDatabase
+    private val db: AppDatabase
 ) : ViewModel() {
 
-    val shoppingList = BehaviorRelay.createDefault(mutableListOf<ShoppingListItem>())
+    val shoppingList: BehaviorRelay<MutableList<ShoppingListItem>> = BehaviorRelay.createDefault(mutableListOf())
     private lateinit var compositeDisposable: CompositeDisposable
     val insertItemSuccess: PublishRelay<Boolean> = PublishRelay.create()
 
@@ -34,31 +37,41 @@ class MainViewModel @Inject constructor(
             .addTo(compositeDisposable)
     }
 
-    fun insertItem(itemToInsert: ShoppingListItem) {
-        db.shoppingListItemDao().insert(itemToInsert)
-            .subscribeOn(Schedulers.computation())
-            .subscribe(
-                {
-                    insertItemSuccess.accept(true)
-                },
-                { error ->
-                    Logger.d(error.localizedMessage)
-                }
-            )
-            .addTo(compositeDisposable)
-    }
+//    fun insertItem(itemToInsert: ShoppingListItem) {
+//        db.shoppingListItemDao().insert(itemToInsert)
+//            .subscribeOn(Schedulers.computation())
+//            .subscribe(
+//                {
+//                    insertItemSuccess.accept(true)
+//                },
+//                { error ->
+//                    Logger.d(error.localizedMessage)
+//                }
+//            )
+//            .addTo(compositeDisposable)
+//    }
 
-    fun deleteItem(itemToDelete: ShoppingListItem) {
-        db.shoppingListItemDao().delete(itemToDelete)
+//    fun deleteItem(itemToDelete: ShoppingListItem) {
+//        db.shoppingListItemDao().delete(itemToDelete)
+//            .subscribeOn(Schedulers.computation())
+//            .observeOn(AndroidSchedulers.mainThread())
+//            .subscribe(
+//                {
+//                },
+//                { error ->
+//                    Logger.d(error.localizedMessage)
+//                }
+//            )
+//            .addTo(compositeDisposable)
+//    }
+
+    fun saveAll() {
+        db.shoppingListItemDao().deleteAll()
+            .concatWith(db.shoppingListItemDao().insertAll(shoppingList.value))
             .subscribeOn(Schedulers.computation())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(
-                {
-                },
-                { error ->
-                    Logger.d(error.localizedMessage)
-                }
-            )
+            .subscribe {
+                Logger.d("Database rewrite complete")
+            }
             .addTo(compositeDisposable)
     }
 

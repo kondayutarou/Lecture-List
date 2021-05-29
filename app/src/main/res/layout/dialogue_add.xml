@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:textAlignment="center"
         android:textSize="24sp"
-        android:text="@string/fav_description" />
+        android:text="@string/fav_add_description" />
 
     <EditText
         android:id="@+id/text_input"

@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Shopping List</string>
-    <string name="fav_description">Add shopping item</string>
+    <string name="fav_add_description">Add shopping item</string>
+    <string name="fav_save_description">Save shopping items</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     <string name="undo">Undo</string>
