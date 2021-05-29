@@ -35,8 +35,8 @@ class MainRecyclerViewAdapter(
         holder.itemView.apply {
             textView.text = item.name
             checkBox.isChecked = item.checked
-            checkBox.setOnCheckedChangeListener { compoundButton, b ->
-                setCheckedState(position, checkBox.isChecked)
+            checkBox.setOnCheckedChangeListener { _, boolean ->
+                setCheckedState(position, boolean)
             }
         }
     }
