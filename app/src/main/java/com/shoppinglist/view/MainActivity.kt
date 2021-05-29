@@ -77,7 +77,6 @@ class MainActivity : AppCompatActivity() {
                         viewModel.shoppingList.accept(value)
                         binding.recyclerView.adapter?.notifyItemRemoved(position)
                         deletedItem?.let { item ->
-                            viewModel.deleteItem(item)
                             showSnackBar()
                         }
                     }
@@ -114,7 +113,6 @@ class MainActivity : AppCompatActivity() {
                     val item = ShoppingListItem(UUID.randomUUID().toString(), inputString, false)
                     value.add(item)
                     viewModel.shoppingList.accept(value)
-                    viewModel.insertItem(item)
                 }
             }
             it.setNegativeButton(R.string.cancel) { dialogInterface, _ ->

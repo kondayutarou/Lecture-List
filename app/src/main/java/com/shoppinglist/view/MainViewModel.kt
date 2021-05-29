@@ -37,33 +37,33 @@ class MainViewModel @Inject constructor(
             .addTo(compositeDisposable)
     }
 
-    fun insertItem(itemToInsert: ShoppingListItem) {
-        db.shoppingListItemDao().insert(itemToInsert)
-            .subscribeOn(Schedulers.computation())
-            .subscribe(
-                {
-                    insertItemSuccess.accept(true)
-                },
-                { error ->
-                    Logger.d(error.localizedMessage)
-                }
-            )
-            .addTo(compositeDisposable)
-    }
+//    fun insertItem(itemToInsert: ShoppingListItem) {
+//        db.shoppingListItemDao().insert(itemToInsert)
+//            .subscribeOn(Schedulers.computation())
+//            .subscribe(
+//                {
+//                    insertItemSuccess.accept(true)
+//                },
+//                { error ->
+//                    Logger.d(error.localizedMessage)
+//                }
+//            )
+//            .addTo(compositeDisposable)
+//    }
 
-    fun deleteItem(itemToDelete: ShoppingListItem) {
-        db.shoppingListItemDao().delete(itemToDelete)
-            .subscribeOn(Schedulers.computation())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(
-                {
-                },
-                { error ->
-                    Logger.d(error.localizedMessage)
-                }
-            )
-            .addTo(compositeDisposable)
-    }
+//    fun deleteItem(itemToDelete: ShoppingListItem) {
+//        db.shoppingListItemDao().delete(itemToDelete)
+//            .subscribeOn(Schedulers.computation())
+//            .observeOn(AndroidSchedulers.mainThread())
+//            .subscribe(
+//                {
+//                },
+//                { error ->
+//                    Logger.d(error.localizedMessage)
+//                }
+//            )
+//            .addTo(compositeDisposable)
+//    }
 
     fun saveAll() {
         db.shoppingListItemDao().deleteAll()
