@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity() {
         binding.viewModel = viewModel
         binding.recyclerView.apply {
             this.layoutManager = LinearLayoutManager(this@MainActivity)
-            this.adapter = MainRecyclerViewAdapter(this@MainActivity, viewModel.shoppingList.value)
+            this.adapter = MainRecyclerViewAdapter(this@MainActivity, viewModel.shoppingList)
             setTouchGestureOnRecyclerView().attachToRecyclerView(this)
         }
 
