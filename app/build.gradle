@@ -10,12 +10,12 @@ plugins {
 
 android {
     compileSdkVersion 30
-    buildToolsVersion "30.0.2"
+    buildToolsVersion "30.0.3"
 
     dataBinding.enabled = true
     defaultConfig {
         applicationId "com.lecture_list"
-        minSdkVersion 28
+        minSdkVersion 23
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
