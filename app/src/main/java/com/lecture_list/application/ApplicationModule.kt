@@ -1,9 +1,9 @@
-package com.shoppinglist.application
+package com.lecture_list.application
 
 import android.content.Context
 import androidx.room.Room
-import com.shoppinglist.data.source.local.AppDatabase
-import com.shoppinglist.view.MainViewModel
+import com.lecture_list.data.source.local.AppDatabase
+import com.lecture_list.view.MainViewModel
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

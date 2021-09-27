@@ -1,4 +1,4 @@
-package com.shoppinglist.view
+package com.lecture_list.view
 
 import android.content.Context
 import android.os.Bundle
@@ -11,10 +11,10 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
-import com.shoppinglist.R
-import com.shoppinglist.databinding.ActivityMainBinding
-import com.shoppinglist.databinding.DialogueAddBinding
-import com.shoppinglist.data.ShoppingListItem
+import com.lecture_list.R
+import com.lecture_list.databinding.ActivityMainBinding
+import com.lecture_list.databinding.DialogueAddBinding
+import com.lecture_list.data.ShoppingListItem
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable

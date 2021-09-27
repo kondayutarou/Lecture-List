@@ -1,11 +1,11 @@
-package com.shoppinglist.view
+package com.lecture_list.view
 
 import androidx.lifecycle.ViewModel
 import com.jakewharton.rxrelay3.BehaviorRelay
 import com.jakewharton.rxrelay3.PublishRelay
 import com.orhanobut.logger.Logger
-import com.shoppinglist.data.ShoppingListItem
-import com.shoppinglist.data.source.local.AppDatabase
+import com.lecture_list.data.ShoppingListItem
+import com.lecture_list.data.source.local.AppDatabase
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.kotlin.addTo
 import io.reactivex.rxjava3.schedulers.Schedulers

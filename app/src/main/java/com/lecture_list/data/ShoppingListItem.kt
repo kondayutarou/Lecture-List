@@ -1,10 +1,7 @@
-package com.shoppinglist.data
+package com.lecture_list.data
 
 import androidx.room.*
-import com.shoppinglist.data.source.local.ShoppingListItemInterface
-import io.reactivex.rxjava3.core.Completable
-import io.reactivex.rxjava3.core.Maybe
-import io.reactivex.rxjava3.core.Observable
+import com.lecture_list.data.source.local.ShoppingListItemInterface
 
 @Entity
 data class ShoppingListItem(

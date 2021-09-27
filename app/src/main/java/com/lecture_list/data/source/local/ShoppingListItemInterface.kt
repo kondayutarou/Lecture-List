@@ -1,4 +1,4 @@
-package com.shoppinglist.data.source.local
+package com.lecture_list.data.source.local
 
 interface ShoppingListItemInterface {
     val uuid: String

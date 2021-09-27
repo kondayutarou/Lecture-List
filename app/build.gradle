@@ -14,7 +14,7 @@ android {
 
     dataBinding.enabled = true
     defaultConfig {
-        applicationId "com.shoppinglist"
+        applicationId "com.lecture_list"
         minSdkVersion 28
         targetSdkVersion 30
         versionCode 1

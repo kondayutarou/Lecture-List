@@ -1,4 +1,4 @@
-package com.shoppinglist.view
+package com.lecture_list.view
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -6,8 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.jakewharton.rxrelay3.BehaviorRelay
-import com.shoppinglist.databinding.MainRecyclerCellBinding
-import com.shoppinglist.data.ShoppingListItem
+import com.lecture_list.databinding.MainRecyclerCellBinding
+import com.lecture_list.data.ShoppingListItem
 import kotlinx.android.synthetic.main.main_recycler_cell.view.*
 
 class MainRecyclerViewAdapter(

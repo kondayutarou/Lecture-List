@@ -1,10 +1,10 @@
-package com.shoppinglist.application
+package com.lecture_list.application
 
 import android.app.Application
 import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.Logger
 import com.orhanobut.logger.PrettyFormatStrategy
-import com.shoppinglist.BuildConfig
+import com.lecture_list.BuildConfig
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp

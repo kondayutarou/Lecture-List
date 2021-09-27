@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "150474938681",
-    "project_id": "simple-shopping-list-app",
-    "storage_bucket": "simple-shopping-list-app.appspot.com"
+    "project_number": "1048951570432",
+    "project_id": "lecture-list",
+    "storage_bucket": "lecture-list.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:150474938681:android:8fdc8a5edefbedf477f0e8",
+        "mobilesdk_app_id": "1:1048951570432:android:cbb8006204da95814d98e5",
         "android_client_info": {
-          "package_name": "com.shoppinglist"
+          "package_name": "com.lecture_list"
         }
       },
       "oauth_client": [
         {
-          "client_id": "150474938681-4fjihmgo0sd8v1r7mt6hb5mr72h2ggl9.apps.googleusercontent.com",
+          "client_id": "1048951570432-50lgcaidsro9vfq30qau4i6djtf40l58.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBCPV04NTeJdeGwXD7hNC9OHOIop225LmY"
+          "current_key": "AIzaSyDMYXGbqbK-0QjQTVxSFSgjqv2gd-j-zPc"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "150474938681-4fjihmgo0sd8v1r7mt6hb5mr72h2ggl9.apps.googleusercontent.com",
+              "client_id": "1048951570432-50lgcaidsro9vfq30qau4i6djtf40l58.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
