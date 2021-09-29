@@ -2,6 +2,8 @@ package com.lecture_list.model
 
 import com.squareup.moshi.Json
 
+typealias LectureList = List<LectureListItemApi>
+
 data class LectureListItemApi(
     val id: String,
     val name: String,

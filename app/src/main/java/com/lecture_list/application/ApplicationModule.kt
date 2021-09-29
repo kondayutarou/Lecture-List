@@ -9,11 +9,13 @@ import com.lecture_list.data.source.api.lecture.list.LectureListApiRepositoryInt
 import com.lecture_list.data.source.local.AppDatabase
 import com.lecture_list.view.MainViewModel
 import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import hu.akarnokd.rxjava3.retrofit.RxJava3CallAdapterFactory
 import okhttp3.OkHttpClient
 import javax.inject.Singleton
 import okhttp3.logging.HttpLoggingInterceptor
@@ -73,7 +75,7 @@ class ApplicationModule {
     @Provides
     fun provideMoshi(): Moshi {
         return Moshi.Builder()
-            .add(com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory())
+            .add(KotlinJsonAdapterFactory())
             .build()
     }
 
@@ -97,7 +99,8 @@ class ApplicationModule {
         return Retrofit.Builder()
             .client(client)
             .baseUrl(baseUrl)
-            .addConverterFactory(MoshiConverterFactory.create())
+            .addCallAdapterFactory(RxJava3CallAdapterFactory.create())
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()
     }
 
