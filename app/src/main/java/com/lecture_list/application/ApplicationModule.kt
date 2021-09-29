@@ -12,8 +12,8 @@ import com.squareup.moshi.Moshi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ActivityComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import javax.inject.Singleton
 import okhttp3.logging.HttpLoggingInterceptor
@@ -22,15 +22,20 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import javax.inject.Named
 
 @Module
-@InstallIn(ActivityComponent::class)
+@InstallIn(SingletonComponent::class)
 class ApplicationModule {
     companion object {
         const val BASE_URL = "base_url"
     }
 
+    @Provides
+    fun provideContext(@ApplicationContext context: Context) : Context {
+        return context
+    }
+
     @Singleton
     @Provides
-    fun provideDb(@ApplicationContext context: Context): AppDatabase {
+    fun provideDb(context: Context): AppDatabase {
         return Room.databaseBuilder(
             context,
             AppDatabase::class.java, "database-name"
@@ -39,8 +44,8 @@ class ApplicationModule {
 
     @Singleton
     @Provides
-    fun provideMainViewModel(@ApplicationContext context: Context): MainViewModel {
-        return MainViewModel(provideDb(context))
+    fun provideMainViewModel(db: AppDatabase): MainViewModel {
+        return MainViewModel(db)
     }
 
     @Singleton
