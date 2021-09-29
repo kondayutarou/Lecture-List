@@ -18,6 +18,7 @@ class MainViewModel @Inject constructor(
     val compositeDisposable: CompositeDisposable = CompositeDisposable()
 
     fun start() {
+        apiRepository.fetchLectureListObservable()
     }
 
     fun finish() {
