@@ -29,7 +29,7 @@ class ApplicationModule {
     }
 
     @Provides
-    fun provideContext(@ApplicationContext context: Context) : Context {
+    fun provideContext(@ApplicationContext context: Context): Context {
         return context
     }
 
@@ -44,8 +44,9 @@ class ApplicationModule {
 
     @Singleton
     @Provides
-    fun provideMainViewModel(db: AppDatabase): MainViewModel {
-        return MainViewModel(db)
+    fun provideMainViewModel(db: AppDatabase, apiRepository: LectureListApiRepositoryInterface):
+            MainViewModel {
+        return MainViewModel(db, apiRepository)
     }
 
     @Singleton
