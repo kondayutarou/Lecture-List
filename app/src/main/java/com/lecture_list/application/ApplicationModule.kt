@@ -53,22 +53,14 @@ class ApplicationModule {
 
     @Singleton
     @Provides
-    fun provideOkHttpLoggingInterceptor(): HttpLoggingInterceptor {
-        val httpLogger = HttpLoggingInterceptor()
-        if (BuildConfig.DEBUG) {
-            httpLogger.setLevel(HttpLoggingInterceptor.Level.BASIC)
-        } else {
-            httpLogger.setLevel(HttpLoggingInterceptor.Level.NONE)
-        }
-        return httpLogger
+    fun provideOkHttpClientBuilder(): OkHttpClientProvider {
+        return OkHttpClientProvider()
     }
 
     @Singleton
     @Provides
-    fun provideOkHttpClient(httpLogger: HttpLoggingInterceptor): OkHttpClient {
-        return OkHttpClient.Builder()
-            .addInterceptor(httpLogger)
-            .build()
+    fun provideOkHttpClient(okHttpBuilder: OkHttpClientProvider): OkHttpClient {
+        return okHttpBuilder.build()
     }
 
     @Singleton
