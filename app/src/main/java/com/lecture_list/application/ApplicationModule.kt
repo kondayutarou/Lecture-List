@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.room.Room
 import com.lecture_list.BuildConfig
 import com.lecture_list.R
+import com.lecture_list.data.source.api.lecture.list.LectureListApiRepository
+import com.lecture_list.data.source.api.lecture.list.LectureListApiRepositoryInterface
 import com.lecture_list.data.source.local.AppDatabase
 import com.lecture_list.view.MainViewModel
 import com.squareup.moshi.Moshi
@@ -35,12 +37,14 @@ class ApplicationModule {
         ).build()
     }
 
+    @Singleton
     @Provides
     fun provideMainViewModel(@ApplicationContext context: Context): MainViewModel {
         return MainViewModel(provideDb(context))
     }
 
     @Singleton
+    @Provides
     fun provideOkHttpLoggingInterceptor(): HttpLoggingInterceptor {
         val httpLogger = HttpLoggingInterceptor()
         if (BuildConfig.DEBUG) {
@@ -52,6 +56,7 @@ class ApplicationModule {
     }
 
     @Singleton
+    @Provides
     fun provideOkHttpClient(httpLogger: HttpLoggingInterceptor): OkHttpClient {
         return OkHttpClient.Builder()
             .addInterceptor(httpLogger)
@@ -59,6 +64,7 @@ class ApplicationModule {
     }
 
     @Singleton
+    @Provides
     fun provideMoshi(): Moshi {
         return Moshi.Builder()
             .add(com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory())
@@ -66,6 +72,7 @@ class ApplicationModule {
     }
 
     @Singleton
+    @Provides
     @Named(BASE_URL)
     fun provideBaseUrl(@ApplicationContext context: Context): String {
         return if (BuildConfig.DEBUG) {
@@ -76,6 +83,7 @@ class ApplicationModule {
     }
 
     @Singleton
+    @Provides
     fun provideRetrofit(
         client: OkHttpClient, moshi: Moshi,
         @Named(BASE_URL) baseUrl: String
@@ -85,5 +93,13 @@ class ApplicationModule {
             .baseUrl(baseUrl)
             .addConverterFactory(MoshiConverterFactory.create())
             .build()
+    }
+
+    @Singleton
+    @Provides
+    fun provideLectureListApiRepository(
+        retrofit: Retrofit
+    ): LectureListApiRepositoryInterface {
+        return LectureListApiRepository(retrofit)
     }
 }
