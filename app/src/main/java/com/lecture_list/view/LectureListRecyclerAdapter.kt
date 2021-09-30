@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.lecture_list.databinding.MainRecyclerCellBinding
+import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.main_recycler_cell.view.*
 
 class LectureListRecyclerAdapter(
     private val context: Context,
@@ -31,6 +33,11 @@ class LectureListRecyclerAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = viewModel.lectureListItem?.value?.get(position) ?: return
+
+        Picasso.get()
+            .load(item.iconUrl)
+            .into(holder.itemView.teacher_image)
+
         recyclerBinding.courseInfo = item
     }
 
