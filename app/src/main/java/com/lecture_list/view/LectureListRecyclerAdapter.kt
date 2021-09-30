@@ -5,33 +5,32 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.jakewharton.rxrelay3.BehaviorRelay
 import com.lecture_list.databinding.MainRecyclerCellBinding
-import com.lecture_list.model.LectureListItem
 
 class LectureListRecyclerAdapter(
     private val context: Context,
-    private val lectureList: BehaviorRelay<MutableList<LectureListItem>>
+    private val viewModel: MainViewModel
 ) : RecyclerView.Adapter<LectureListRecyclerAdapter.ViewHolder>() {
     private lateinit var recyclerBinding: MainRecyclerCellBinding
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        recyclerBinding = MainRecyclerCellBinding.inflate(LayoutInflater.from(context), parent, false)
+        recyclerBinding =
+            MainRecyclerCellBinding.inflate(LayoutInflater.from(context), parent, false)
         return ViewHolder(recyclerBinding.root)
     }
 
     override fun getItemCount(): Int {
-        return lectureList.value.count()
+        return viewModel.lectureListItem.value?.count() ?: 0
     }
 
     private fun setCheckedState(position: Int, checked: Boolean) {
-        var value = lectureList.value
+        var value = viewModel.lectureListItem.value ?: return
         value[position].bookmarked = checked
-        lectureList.accept(value)
+        viewModel.lectureListItem.accept(value)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = lectureList.value[position]
+        val item = viewModel.lectureListItem?.value?.get(position) ?: return
         recyclerBinding.courseInfo = item
     }
 

@@ -5,6 +5,7 @@ import com.jakewharton.rxrelay3.BehaviorRelay
 import com.lecture_list.data.source.api.lecture.list.LectureListApiRepositoryInterface
 import com.lecture_list.data.source.local.AppDatabase
 import com.lecture_list.model.LectureList
+import com.lecture_list.model.LectureListItem
 import com.orhanobut.logger.Logger
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.kotlin.addTo
@@ -15,13 +16,14 @@ class MainViewModel @Inject constructor(
     private val db: AppDatabase, private val apiRepository: LectureListApiRepositoryInterface
 ) : ViewModel() {
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
-    private val lectureListItem = BehaviorRelay.create<LectureList>()
+    val lectureListItem = BehaviorRelay.create<List<LectureListItem>>()
 
     fun start() {
         // TODO: Error handling
         apiRepository.fetchLectureListObservable()
             .subscribeBy(onNext = {
                 Logger.d(it.toString())
+                lectureListItem.accept(it)
             }, onError = {
                 Logger.d(it.localizedMessage)
             })

@@ -16,18 +16,12 @@ class MainActivity : AppCompatActivity() {
         DataBindingUtil.setContentView(this, R.layout.activity_main)
     }
 
-    @Inject
-    lateinit var viewModel: MainViewModel
-    private val compositeDisposable = CompositeDisposable()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel.start()
         initView()
     }
 
     private fun initView() {
-        binding.viewModel = viewModel
         changeFragment(LectureListFragment(), binding)
     }
 
@@ -43,7 +37,5 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        viewModel.finish()
-        compositeDisposable.clear()
     }
 }
