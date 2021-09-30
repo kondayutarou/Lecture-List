@@ -43,6 +43,7 @@ class MainViewModel @Inject constructor(
         sharedLectureList.map { list -> list.map { it.id } }
             .subscribeBy(onNext = { list ->
                 list.forEach { loadProgress(it) }
+                shouldUpdateView.accept(Unit)
             })
             .addTo(compositeDisposable)
     }
