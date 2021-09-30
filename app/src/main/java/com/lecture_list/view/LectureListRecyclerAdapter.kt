@@ -22,23 +22,25 @@ class LectureListRecyclerAdapter(
     }
 
     override fun getItemCount(): Int {
-        return viewModel.lectureListItem.value?.count() ?: 0
-    }
-
-    private fun setCheckedState(position: Int, checked: Boolean) {
-        var value = viewModel.lectureListItem.value ?: return
-        value[position].bookmarked = checked
-        viewModel.lectureListItem.accept(value)
+        return viewModel.lectureListForView.value?.count() ?: 0
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = viewModel.lectureListItem?.value?.get(position) ?: return
+        val item = viewModel.lectureListForView?.value?.get(position) ?: return
 
         Picasso.get()
             .load(item.iconUrl)
             .into(holder.itemView.teacher_image)
 
         recyclerBinding.courseInfo = item
+    }
+
+    override fun getItemId(position: Int): Long {
+        return position.toLong()
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return position
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)

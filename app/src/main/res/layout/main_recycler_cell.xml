@@ -5,6 +5,8 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="courseInfo"
             type="com.lecture_list.model.LectureListItem" />
@@ -56,6 +58,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
+
+                    <com.google.android.material.progressindicator.LinearProgressIndicator
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:max="100"
+                        android:progress="@{courseInfo.progress}"
+                        android:visibility="@{(courseInfo.progress == null) ? View.INVISIBLE : View.VISIBLE}" />
 
                     <CheckBox
                         android:layout_width="wrap_content"

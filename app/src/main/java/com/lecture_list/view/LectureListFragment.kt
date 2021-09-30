@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.lecture_list.databinding.FragmentLectureListBinding
+import com.lecture_list.extension.getDialog
+import com.orhanobut.logger.Logger
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
@@ -35,12 +37,8 @@ class LectureListFragment : Fragment() {
         binding = FragmentLectureListBinding.inflate(inflater, container, false)
         initViews()
         initRx()
-        return binding.root
-    }
-
-    override fun onStart() {
-        super.onStart()
         viewModel.start()
+        return binding.root
     }
 
     private fun initViews() {
@@ -51,9 +49,18 @@ class LectureListFragment : Fragment() {
     }
 
     private fun initRx() {
-        viewModel.shouldUpdateView.observeOn(AndroidSchedulers.mainThread())
+        viewModel.lectureListForView
+            .filter { it != null }
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
+                Logger.d(viewModel.lectureListForView.value)
                 binding.recycler.adapter?.notifyDataSetChanged()
+            }
+            .addTo(compositeDisposable)
+
+        viewModel.errorRelay.observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                parentActivity.getDialog("Api Error. Please refresh the app", "")
             }
             .addTo(compositeDisposable)
     }

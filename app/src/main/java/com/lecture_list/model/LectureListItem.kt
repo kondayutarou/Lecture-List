@@ -8,7 +8,7 @@ data class LectureListItem(
     val teacherName: String,
     val lastAttemptedTs: Int,
     var bookmarked: Boolean = false,
-    var progress: Int = 0
+    var progress: Int? = null
 ) {
     companion object {
         // Init LectureListItem from LectureListApi response
@@ -22,15 +22,5 @@ data class LectureListItem(
                 lastAttemptedTs = listApiItem.lastAttemptedTs
             )
         }
-    }
-
-    fun updateProgress(progress: Int): LectureListItem {
-        this.progress = progress
-        return this
-    }
-
-    fun updateBookmarkState(bookmarked: Boolean): LectureListItem {
-        this.bookmarked = bookmarked
-        return this
     }
 }
