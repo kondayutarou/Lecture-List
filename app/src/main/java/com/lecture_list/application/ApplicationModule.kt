@@ -6,6 +6,8 @@ import com.lecture_list.BuildConfig
 import com.lecture_list.R
 import com.lecture_list.data.source.api.lecture.list.LectureListApiRepository
 import com.lecture_list.data.source.api.lecture.list.LectureListApiRepositoryInterface
+import com.lecture_list.data.source.api.lecture.progress.LectureProgressApiRepository
+import com.lecture_list.data.source.api.lecture.progress.LectureProgressApiRepositoryInterface
 import com.lecture_list.data.source.local.AppDatabase
 import com.lecture_list.view.MainViewModel
 import com.squareup.moshi.Moshi
@@ -46,9 +48,11 @@ class ApplicationModule {
 
     @Singleton
     @Provides
-    fun provideMainViewModel(db: AppDatabase, apiRepository: LectureListApiRepositoryInterface):
+    fun provideMainViewModel(db: AppDatabase,
+                             lectureListApiRepository: LectureListApiRepositoryInterface,
+                             lectureProgressApiRepository: LectureProgressApiRepositoryInterface):
             MainViewModel {
-        return MainViewModel(db, apiRepository)
+        return MainViewModel(db, lectureListApiRepository, lectureProgressApiRepository)
     }
 
     @Singleton
@@ -102,5 +106,13 @@ class ApplicationModule {
         retrofit: Retrofit
     ): LectureListApiRepositoryInterface {
         return LectureListApiRepository(retrofit)
+    }
+
+    @Singleton
+    @Provides
+    fun provideLectureProgressApiRepository(
+        retrofit: Retrofit
+    ): LectureProgressApiRepositoryInterface {
+        return LectureProgressApiRepository(retrofit)
     }
 }

@@ -40,7 +40,7 @@ class LectureListFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        viewModel.loadApi()
+        viewModel.start()
     }
 
     private fun initViews() {
@@ -60,6 +60,7 @@ class LectureListFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        viewModel.finish()
         compositeDisposable.clear()
     }
 }

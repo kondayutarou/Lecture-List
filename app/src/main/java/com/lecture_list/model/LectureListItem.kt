@@ -12,15 +12,25 @@ data class LectureListItem(
 ) {
     companion object {
         // Init LectureListItem from LectureListApi response
-        fun fromListApi(listItemApi: LectureListItemApi): LectureListItem {
+        fun fromListApi(listApiItem: LectureListApiItem): LectureListItem {
             return LectureListItem(
-                id = listItemApi.id,
-                name = listItemApi.name,
-                iconUrl = listItemApi.iconUrl,
-                numberOfTopics = listItemApi.numberOfTopics,
-                teacherName = listItemApi.teacherName,
-                lastAttemptedTs = listItemApi.lastAttemptedTs
+                id = listApiItem.id,
+                name = listApiItem.name,
+                iconUrl = listApiItem.iconUrl,
+                numberOfTopics = listApiItem.numberOfTopics,
+                teacherName = listApiItem.teacherName,
+                lastAttemptedTs = listApiItem.lastAttemptedTs
             )
         }
+    }
+
+    fun updateProgress(progress: Int): LectureListItem {
+        this.progress = progress
+        return this
+    }
+
+    fun updateBookmarkState(bookmarked: Boolean): LectureListItem {
+        this.bookmarked = bookmarked
+        return this
     }
 }
