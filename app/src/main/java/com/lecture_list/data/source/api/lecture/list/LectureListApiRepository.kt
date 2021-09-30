@@ -1,9 +1,7 @@
 package com.lecture_list.data.source.api.lecture.list
 
 import com.lecture_list.model.LectureListItem
-import com.lecture_list.model.LectureListItemApi
 import io.reactivex.rxjava3.core.Observable
-import io.reactivex.rxjava3.kotlin.toObservable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import retrofit2.Retrofit
 import javax.inject.Inject
@@ -16,7 +14,7 @@ class LectureListApiRepository @Inject constructor(
             .fetchLectureList()
             .subscribeOn(Schedulers.io())
             .flatMap { apiList ->
-                Observable.just(apiList.map { LectureListItem.fromApi(it) })
+                Observable.just(apiList.map { LectureListItem.fromListApi(it) })
             }
     }
 }

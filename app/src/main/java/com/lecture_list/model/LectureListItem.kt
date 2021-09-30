@@ -7,10 +7,12 @@ data class LectureListItem(
     val numberOfTopics: Int,
     val teacherName: String,
     val lastAttemptedTs: Int,
-    var bookmarked: Boolean = false
+    var bookmarked: Boolean = false,
+    var progress: Int = 0
 ) {
     companion object {
-        fun fromApi(listItemApi: LectureListItemApi): LectureListItem {
+        // Init LectureListItem from LectureListApi response
+        fun fromListApi(listItemApi: LectureListItemApi): LectureListItem {
             return LectureListItem(
                 id = listItemApi.id,
                 name = listItemApi.name,
