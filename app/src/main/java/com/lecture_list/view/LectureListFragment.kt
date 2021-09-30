@@ -40,7 +40,7 @@ class LectureListFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        viewModel.start()
+        viewModel.loadApi()
     }
 
     private fun initViews() {
@@ -51,7 +51,7 @@ class LectureListFragment : Fragment() {
     }
 
     private fun initRx() {
-        viewModel.lectureListItem.observeOn(AndroidSchedulers.mainThread())
+        viewModel.shouldUpdateView.observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 binding.recycler.adapter?.notifyDataSetChanged()
             }
