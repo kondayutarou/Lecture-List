@@ -7,7 +7,7 @@
 
         <variable
             name="courseInfo"
-            type="com.lecture_list.model.LectureListItemApi" />
+            type="com.lecture_list.model.LectureListItem" />
     </data>
 
     <androidx.cardview.widget.CardView
@@ -52,12 +52,22 @@
                     android:layout_height="wrap_content"
                     android:text="@{courseInfo.name}" />
 
-                <TextView
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@{courseInfo.numberOfTopics}" />
-            </LinearLayout>
+                    android:orientation="horizontal">
 
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@{courseInfo.numberOfTopics}" />
+
+                    <CheckBox
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="@{courseInfo.bookmarked}" />
+                </LinearLayout>
+            </LinearLayout>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 </layout>
