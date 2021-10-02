@@ -16,6 +16,7 @@ import com.lecture_list.model.LectureListItem
 import com.orhanobut.logger.Logger
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.kotlin.addTo
 import io.reactivex.rxjava3.schedulers.Schedulers
@@ -88,11 +89,13 @@ class LectureListFragment : Fragment() {
             .filter { it.isNotEmpty() }
             .observeOn(Schedulers.io())
             .subscribe {
+                Logger.d(it)
                 viewModel.saveData()
             }
             .addTo(compositeDisposable)
 
-        viewModel.serverErrorRelay.observeOn(AndroidSchedulers.mainThread())
+        Observable.merge(viewModel.serverErrorRelay, viewModel.networkErrorRelay)
+            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 viewModel.loadData()
                 parentActivity.getDialog(

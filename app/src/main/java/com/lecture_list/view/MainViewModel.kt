@@ -100,6 +100,7 @@ class MainViewModel @Inject constructor(
             .subscribeOn(Schedulers.io())
             .andThen {
                 db.lectureListItemDao().insertAll(currentLectureList)
+                    .doOnSubscribe { Logger.d("Save finished subscribed") }
                     .subscribe {
                         Logger.d("Save finished")
                     }
@@ -114,6 +115,8 @@ class MainViewModel @Inject constructor(
 
     fun loadData() {
         db.lectureListItemDao().getAll().subscribeOn(Schedulers.io())
+            .filter { it.isNotEmpty() }
+            .doOnSubscribe { Logger.d("list loaded subscribed") }
             .subscribe { list ->
                 val listForView = list.map { it.toLectureListItem() }
                 Logger.d("list loaded")
