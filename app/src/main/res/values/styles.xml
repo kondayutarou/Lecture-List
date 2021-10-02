@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!--LinearProgressIndicator-->
     <style name="LinearProgressIndicator" parent="Widget.MaterialComponents.LinearProgressIndicator">
         <item name="android:minHeight">10dip</item>
@@ -9,5 +9,11 @@
     <!--  TextView  -->
     <style name="Text.Title" parent="Widget.AppCompat.TextView">
         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
+    </style>
+
+    <!--  CardView  -->
+    <style name="CardView" parent="Widget.MaterialComponents.CardView">
+        <item name="android:layout_marginVertical" tools:targetApi="o">16dp</item>
+        <item name="cardUseCompatPadding">false</item>
     </style>
 </resources>
