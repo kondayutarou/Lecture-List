@@ -6,6 +6,7 @@
         <item name="android:maxHeight">20dip</item>
     </style>
 
+    <!--  TextView  -->
     <style name="Text.Title" parent="Widget.AppCompat.TextView">
         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
     </style>
