@@ -46,6 +46,10 @@ class LectureListFragment : Fragment() {
             adapter = LectureListRecyclerAdapter(parentActivity, viewModel)
             layoutManager = LinearLayoutManager(parentActivity)
         }
+
+        binding.swipeContainer.setOnRefreshListener {
+            viewModel.loadApi()
+        }
     }
 
     private fun initRx() {
@@ -55,6 +59,7 @@ class LectureListFragment : Fragment() {
             .subscribe {
                 Logger.d(viewModel.lectureListForView.value)
                 binding.recycler.adapter?.notifyDataSetChanged()
+                binding.swipeContainer.isRefreshing = false
             }
             .addTo(compositeDisposable)
 
