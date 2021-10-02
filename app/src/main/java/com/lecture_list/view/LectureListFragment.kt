@@ -20,6 +20,7 @@ class LectureListFragment : Fragment() {
     private lateinit var binding: FragmentLectureListBinding
     private lateinit var parentActivity: MainActivity
     val compositeDisposable = CompositeDisposable()
+    private lateinit var recyclerAdapter: LectureListRecyclerAdapter
 
     @Inject
     lateinit var viewModel: MainViewModel
@@ -42,8 +43,9 @@ class LectureListFragment : Fragment() {
     }
 
     private fun initViews() {
+        recyclerAdapter = LectureListRecyclerAdapter(parentActivity)
         binding.recycler.apply {
-            adapter = LectureListRecyclerAdapter(parentActivity, viewModel)
+            adapter = recyclerAdapter
             layoutManager = LinearLayoutManager(parentActivity)
         }
 
@@ -58,7 +60,9 @@ class LectureListFragment : Fragment() {
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 Logger.d(it)
-                binding.recycler.adapter?.notifyDataSetChanged()
+                recyclerAdapter.clear()
+                recyclerAdapter.addItems(it)
+                recyclerAdapter.notifyDataSetChanged()
                 binding.swipeContainer.isRefreshing = false
             }
             .addTo(compositeDisposable)

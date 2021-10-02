@@ -6,14 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.lecture_list.databinding.MainRecyclerCellBinding
+import com.lecture_list.model.LectureListItem
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.main_recycler_cell.view.*
 
 class LectureListRecyclerAdapter(
     private val context: Context,
-    private val viewModel: MainViewModel
 ) : RecyclerView.Adapter<LectureListRecyclerAdapter.ViewHolder>() {
     private lateinit var recyclerBinding: MainRecyclerCellBinding
+    private var itemList = emptyList<LectureListItem>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         recyclerBinding =
@@ -22,11 +23,11 @@ class LectureListRecyclerAdapter(
     }
 
     override fun getItemCount(): Int {
-        return viewModel.lectureListForView.value?.count() ?: 0
+        return itemList.count()
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = viewModel.lectureListForView?.value?.get(position) ?: return
+        val item = itemList[position]
 
         Picasso.get()
             .load(item.iconUrl)
@@ -41,6 +42,14 @@ class LectureListRecyclerAdapter(
 
     override fun getItemViewType(position: Int): Int {
         return position
+    }
+
+    fun addItems(itemList: List<LectureListItem>) {
+        this.itemList = itemList
+    }
+
+    fun clear() {
+        this.itemList = emptyList()
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
