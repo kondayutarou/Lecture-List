@@ -35,8 +35,8 @@ class MainViewModel @Inject constructor(
     }
 
     fun loadApi() {
-        lectureListApiRepository.fetchLectureListObservable().share()
-            .subscribeBy(onNext = { list ->
+        lectureListApiRepository.fetchLectureListObservable()
+            .subscribeBy(onSuccess = { list ->
                 lectureListForProgressApi.accept(list)
                 Logger.d(list.map { it.id })
             }, onError = {
@@ -59,7 +59,7 @@ class MainViewModel @Inject constructor(
                     )
                 }
                 observableList.forEach { pair ->
-                    pair.first.blockingSubscribeBy(onNext = { apiItem ->
+                    pair.first.blockingSubscribeBy(onSuccess = { apiItem ->
                         val newItem = LectureListItem.fromListApi(pair.second)
                         newItem.progress = apiItem.progress
                         newList.add(newItem)
