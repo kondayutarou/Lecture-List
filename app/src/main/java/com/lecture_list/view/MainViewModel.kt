@@ -28,6 +28,7 @@ class MainViewModel @Inject constructor(
     val lectureListForView = BehaviorRelay.create<List<LectureListItem>>()
 
     val errorRelay = PublishRelay.create<ApiServerError>()
+    val progressApiErrorRelay = PublishRelay.create<String>()
 
     fun start() {
         loadApi()
@@ -71,6 +72,7 @@ class MainViewModel @Inject constructor(
                         }
                     }, onError = { throwable ->
                         Logger.d(throwable)
+                        progressApiErrorRelay.accept(pair.second.id)
                     })
                 }
                 Observable.just(newList)

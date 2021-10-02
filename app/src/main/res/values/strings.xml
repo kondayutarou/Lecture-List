@@ -19,4 +19,5 @@
     <!--  LectureListFragment  -->
     <string name="bookmark_explanation">Bookmark</string>
     <string name="teacher_image_desc">Image of teacher</string>
+    <string name="progress_fetch_error_display">The progress below is not updated</string>
 </resources>
