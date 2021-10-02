@@ -129,4 +129,9 @@ class MainViewModel @Inject constructor(
     fun finish() {
         compositeDisposable.clear()
     }
+
+    override fun onCleared() {
+        super.onCleared()
+        compositeDisposable.clear()
+    }
 }

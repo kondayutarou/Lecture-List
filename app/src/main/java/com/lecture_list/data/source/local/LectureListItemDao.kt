@@ -4,12 +4,12 @@ import androidx.room.*
 import com.lecture_list.data.LectureListDB
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Maybe
-import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.Single
 
 @Dao
 interface LectureListItemDao {
     @Query("SELECT * FROM lecturelistdb")
-    fun getAll(): Observable<List<LectureListDB>>
+    fun getAll(): Single<List<LectureListDB>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(vararg lectureList: LectureListDB): Maybe<Void>
