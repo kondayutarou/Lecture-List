@@ -57,7 +57,7 @@ class LectureListFragment : Fragment() {
             .filter { it != null }
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                Logger.d(viewModel.lectureListForView.value)
+                Logger.d(it)
                 binding.recycler.adapter?.notifyDataSetChanged()
                 binding.swipeContainer.isRefreshing = false
             }

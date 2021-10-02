@@ -58,11 +58,18 @@ class MainViewModel @Inject constructor(
                         lectureListItem
                     )
                 }
+                // TODO newlist == 0
                 observableList.forEach { pair ->
                     pair.first.blockingSubscribeBy(onSuccess = { apiItem ->
-                        val newItem = LectureListItem.fromListApi(pair.second)
-                        newItem.progress = apiItem.progress
-                        newList.add(newItem)
+                        val matchIndex = newList.indexOfFirst { it.id == apiItem.id }
+                        if (matchIndex == -1) {
+                            val newItem = LectureListItem.fromListApi(pair.second)
+                            newItem.progress = apiItem.progress
+                            newList.add(newItem)
+                        } else {
+                            newList[matchIndex].progress = apiItem.progress
+                            Logger.d(newList[matchIndex].progress)
+                        }
                     }, onError = { throwable ->
                         Logger.d(throwable)
                     })
