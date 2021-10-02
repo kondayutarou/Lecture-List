@@ -6,6 +6,7 @@ import com.jakewharton.rxrelay3.PublishRelay
 import com.lecture_list.data.source.api.lecture.list.LectureListApiRepositoryInterface
 import com.lecture_list.data.source.api.lecture.progress.LectureProgressApiRepositoryInterface
 import com.lecture_list.data.source.local.AppDatabase
+import com.lecture_list.model.ApiNetworkingError
 import com.lecture_list.model.ApiServerError
 import com.lecture_list.model.LectureListApiItem
 import com.lecture_list.model.LectureListItem
@@ -27,7 +28,9 @@ class MainViewModel @Inject constructor(
     val lectureListForProgressApi = PublishRelay.create<List<LectureListApiItem>>()
     val lectureListForView = BehaviorRelay.create<List<LectureListItem>>()
 
-    val errorRelay = PublishRelay.create<ApiServerError>()
+    val serverErrorRelay = PublishRelay.create<ApiServerError>()
+    val networkErrorRelay = PublishRelay.create<ApiNetworkingError>()
+    val progressApiErrorRelay = PublishRelay.create<String>()
 
     fun start() {
         loadApi()
@@ -40,9 +43,10 @@ class MainViewModel @Inject constructor(
                 lectureListForProgressApi.accept(list)
                 Logger.d(list.map { it.id })
             }, onError = {
-                val error = it as? ApiServerError ?: return@subscribeBy
-                errorRelay.accept(error)
-                Logger.d(error)
+                val serverError = it as? ApiServerError
+                val networkingError = it as? ApiNetworkingError
+                serverError?.let { error -> serverErrorRelay.accept(error) }
+                networkingError?.let { error -> networkErrorRelay.accept(error) }
             })
             .addTo(compositeDisposable)
     }
@@ -62,15 +66,18 @@ class MainViewModel @Inject constructor(
                     pair.first.blockingSubscribeBy(onSuccess = { apiItem ->
                         val matchIndex = newList.indexOfFirst { it.id == apiItem.id }
                         if (matchIndex == -1) {
+                            // At the time of first api call
                             val newItem = LectureListItem.fromListApi(pair.second)
                             newItem.progress = apiItem.progress
                             newList.add(newItem)
                         } else {
+                            // From second api call onwards, replace items with identical id
                             newList[matchIndex].progress = apiItem.progress
                             Logger.d(newList[matchIndex].progress)
                         }
                     }, onError = { throwable ->
                         Logger.d(throwable)
+                        progressApiErrorRelay.accept(pair.second.id)
                     })
                 }
                 Observable.just(newList)
@@ -84,7 +91,47 @@ class MainViewModel @Inject constructor(
             .addTo(compositeDisposable)
     }
 
+    fun saveData() {
+        val currentLectureList =
+            lectureListForView.value?.map { return@map it.toDBClass() } ?: return
+
+        db.lectureListItemDao()
+            .deleteAll()
+            .subscribeOn(Schedulers.io())
+            .andThen {
+                db.lectureListItemDao().insertAll(currentLectureList)
+                    .doOnSubscribe { Logger.d("Save finished subscribed") }
+                    .subscribe {
+                        Logger.d("Save finished")
+                    }
+                    .addTo(compositeDisposable)
+            }
+            .subscribe {
+                Logger.d("delete finished")
+            }
+            .addTo(compositeDisposable)
+
+    }
+
+    fun loadData() {
+        db.lectureListItemDao().getAll().subscribeOn(Schedulers.io())
+            .filter { it.isNotEmpty() }
+            .doOnSubscribe { Logger.d("list loaded subscribed") }
+            .subscribe { list ->
+                val listForView = list.map { it.toLectureListItem() }
+                Logger.d("list loaded")
+                Logger.d(list.toString())
+                lectureListForView.accept(listForView)
+            }
+            .addTo(compositeDisposable)
+    }
+
     fun finish() {
+        compositeDisposable.clear()
+    }
+
+    override fun onCleared() {
+        super.onCleared()
         compositeDisposable.clear()
     }
 }

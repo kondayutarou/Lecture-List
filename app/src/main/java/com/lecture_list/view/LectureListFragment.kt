@@ -5,7 +5,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.lecture_list.R
 import com.lecture_list.databinding.FragmentLectureListBinding
@@ -14,8 +16,10 @@ import com.lecture_list.model.LectureListItem
 import com.orhanobut.logger.Logger
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.kotlin.addTo
+import io.reactivex.rxjava3.schedulers.Schedulers
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -50,6 +54,15 @@ class LectureListFragment : Fragment() {
         binding.recycler.apply {
             adapter = recyclerAdapter
             layoutManager = LinearLayoutManager(parentActivity)
+
+            val itemDecoration =
+                DividerItemDecoration(parentActivity, DividerItemDecoration.VERTICAL)
+            val drawable =
+                AppCompatResources.getDrawable(parentActivity, R.drawable.layout_vertical_spacing)
+            drawable?.let {
+                itemDecoration.setDrawable(it)
+                addItemDecoration(itemDecoration)
+            }
         }
 
         binding.swipeContainer.setOnRefreshListener {
@@ -58,9 +71,10 @@ class LectureListFragment : Fragment() {
     }
 
     private fun initRx() {
-        viewModel.lectureListForView
-            .filter { it != null }
-            .observeOn(AndroidSchedulers.mainThread())
+        val sharedLectureList = viewModel.lectureListForView
+            .filter { it != null }.share()
+
+        sharedLectureList.observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 Logger.d(it)
                 recyclerAdapter.clear()
@@ -70,8 +84,20 @@ class LectureListFragment : Fragment() {
             }
             .addTo(compositeDisposable)
 
-        viewModel.errorRelay.observeOn(AndroidSchedulers.mainThread())
+        sharedLectureList
+            // Do not save empty list
+            .filter { it.isNotEmpty() }
+            .observeOn(Schedulers.io())
             .subscribe {
+                Logger.d(it)
+                viewModel.saveData()
+            }
+            .addTo(compositeDisposable)
+
+        Observable.merge(viewModel.serverErrorRelay, viewModel.networkErrorRelay)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe {
+                viewModel.loadData()
                 parentActivity.getDialog(
                     parentActivity.getString(R.string.dialog_api_error), "",
                     errorDialogPositiveListener

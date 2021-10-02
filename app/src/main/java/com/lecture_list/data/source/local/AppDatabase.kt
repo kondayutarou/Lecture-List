@@ -2,9 +2,9 @@ package com.lecture_list.data.source.local
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.lecture_list.data.ShoppingListItem
+import com.lecture_list.data.LectureListDB
 
-@Database(entities = arrayOf(ShoppingListItem::class), version = 1, exportSchema = false)
+@Database(entities = arrayOf(LectureListDB::class), version = 2, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
-    abstract fun shoppingListItemDao(): ShoppingListItemDao
+    abstract fun lectureListItemDao(): LectureListItemDao
 }

@@ -12,7 +12,8 @@
             type="com.lecture_list.model.LectureListItem" />
     </data>
 
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
+        style="@style/CardView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -21,57 +22,78 @@
             android:layout_height="match_parent"
             android:orientation="horizontal">
 
-            <LinearLayout
+            <ImageView
+                android:id="@+id/teacher_image"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.3"
-                android:orientation="vertical"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:ignore="UseCompoundDrawables">
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/teacher_image_desc"
+                android:scaleType="fitCenter" />
 
-                <ImageView
-                    android:id="@+id/teacher_image"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:adjustViewBounds="true"
-                    android:scaleType="fitCenter" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@{courseInfo.teacherName}" />
-            </LinearLayout>
-
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="0.7"
-                android:orientation="vertical">
+                android:layout_weight="0.7">
 
                 <TextView
+                    android:id="@+id/course_name"
+                    style="@style/Text.Title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@{courseInfo.name}" />
+                    android:text="@{courseInfo.name}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/teacher_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@{courseInfo.teacherName}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/course_name" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/teacher_name">
 
-                    <com.google.android.material.progressindicator.LinearProgressIndicator
-                        android:layout_width="match_parent"
+                    <TextView
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:max="100"
-                        android:progress="@{courseInfo.progress}"
-                        android:visibility="@{(courseInfo.progress == null) ? View.INVISIBLE : View.VISIBLE}" />
+                        android:text="@string/bookmark_explanation" />
 
-                    <CheckBox
+                    <com.google.android.material.checkbox.MaterialCheckBox
+                        style="@style/Checkbox"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:checked="@{courseInfo.bookmarked}" />
+
+                    <TextView
+                        android:id="@+id/progress_errpr_display"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/progress_fetch_error_display"
+                        android:visibility="invisible" />
                 </LinearLayout>
-            </LinearLayout>
+
+                <com.google.android.material.progressindicator.LinearProgressIndicator
+                    style="@style/LinearProgressIndicator"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:max="100"
+                    android:progress="@{courseInfo.progress}"
+                    android:visibility="@{(courseInfo.progress == null) ? View.INVISIBLE : View.VISIBLE}"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
-    </androidx.cardview.widget.CardView>
+    </com.google.android.material.card.MaterialCardView>
 </layout>
