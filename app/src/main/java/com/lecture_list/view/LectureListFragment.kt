@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.lecture_list.databinding.FragmentLectureListBinding
 import com.lecture_list.extension.getDialog
+import com.lecture_list.model.LectureListItem
 import com.orhanobut.logger.Logger
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -43,7 +44,7 @@ class LectureListFragment : Fragment() {
     }
 
     private fun initViews() {
-        recyclerAdapter = LectureListRecyclerAdapter(parentActivity)
+        recyclerAdapter = LectureListRecyclerAdapter(parentActivity, ArrayList<LectureListItem>())
         binding.recycler.apply {
             adapter = recyclerAdapter
             layoutManager = LinearLayoutManager(parentActivity)
