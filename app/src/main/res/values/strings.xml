@@ -15,4 +15,8 @@
     <string name="removed">is removed</string>
     <string name="dialog_api_error">Api Error. Please refresh the app</string>
     <string name="dialog_ok">OK</string>
+
+    <!--  LectureListFragment  -->
+    <string name="bookmark_explanation">Bookmark</string>
+    <string name="teacher_image_desc">Image of teacher</string>
 </resources>
