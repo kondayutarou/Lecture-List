@@ -63,10 +63,12 @@ class MainViewModel @Inject constructor(
                     pair.first.blockingSubscribeBy(onSuccess = { apiItem ->
                         val matchIndex = newList.indexOfFirst { it.id == apiItem.id }
                         if (matchIndex == -1) {
+                            // At the time of first api call
                             val newItem = LectureListItem.fromListApi(pair.second)
                             newItem.progress = apiItem.progress
                             newList.add(newItem)
                         } else {
+                            // From second api call onwards, replace items with identical id
                             newList[matchIndex].progress = apiItem.progress
                             Logger.d(newList[matchIndex].progress)
                         }
@@ -95,12 +97,27 @@ class MainViewModel @Inject constructor(
             .subscribeOn(Schedulers.io())
             .andThen {
                 db.lectureListItemDao().insertAll(currentLectureList)
+                    .subscribe {
+                        Logger.d("Save finished")
+                    }
+                    .addTo(compositeDisposable)
             }
             .subscribe {
-                Logger.d("Save finished")
+                Logger.d("delete finished")
             }
             .addTo(compositeDisposable)
 
+    }
+
+    fun loadData() {
+        db.lectureListItemDao().getAll().subscribeOn(Schedulers.io())
+            .subscribe { list ->
+                val listForView = list.map { it.toLectureListItem() }
+                Logger.d("list loaded")
+                Logger.d(list.toString())
+                lectureListForView.accept(listForView)
+            }
+            .addTo(compositeDisposable)
     }
 
     fun finish() {

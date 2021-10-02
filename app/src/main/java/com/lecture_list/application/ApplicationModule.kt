@@ -43,7 +43,7 @@ class ApplicationModule {
         return Room.databaseBuilder(
             context,
             AppDatabase::class.java, "database-name"
-        ).build()
+        ).fallbackToDestructiveMigration().build()
     }
 
     @Singleton

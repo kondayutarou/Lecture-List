@@ -10,7 +10,6 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.lecture_list.R
-import com.lecture_list.data.source.local.AppDatabase
 import com.lecture_list.databinding.FragmentLectureListBinding
 import com.lecture_list.extension.getDialog
 import com.lecture_list.model.LectureListItem
@@ -19,6 +18,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.kotlin.addTo
+import io.reactivex.rxjava3.schedulers.Schedulers
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -70,9 +70,10 @@ class LectureListFragment : Fragment() {
     }
 
     private fun initRx() {
-        viewModel.lectureListForView
-            .filter { it != null }
-            .observeOn(AndroidSchedulers.mainThread())
+        val sharedLectureList = viewModel.lectureListForView
+            .filter { it != null }.share()
+
+        sharedLectureList.observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 Logger.d(it)
                 recyclerAdapter.clear()
@@ -82,8 +83,18 @@ class LectureListFragment : Fragment() {
             }
             .addTo(compositeDisposable)
 
+        sharedLectureList
+            // Do not save empty list
+            .filter { it.isNotEmpty() }
+            .observeOn(Schedulers.io())
+            .subscribe {
+                viewModel.saveData()
+            }
+            .addTo(compositeDisposable)
+
         viewModel.errorRelay.observeOn(AndroidSchedulers.mainThread())
             .subscribe {
+                viewModel.loadData()
                 parentActivity.getDialog(
                     parentActivity.getString(R.string.dialog_api_error), "",
                     errorDialogPositiveListener

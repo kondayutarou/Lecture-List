@@ -1,6 +1,7 @@
 package com.lecture_list.data
 
 import androidx.room.*
+import com.lecture_list.model.LectureListItem
 import com.lecture_list.model.LectureListItemInterface
 
 @Entity
@@ -13,4 +14,17 @@ data class LectureListDB(
     @ColumnInfo(name = "lastAttemptedTs") override val lastAttemptedTs: Int,
     @ColumnInfo(name = "bookmarked") override var bookmarked: Boolean,
     @ColumnInfo(name = "progress") override var progress: Int?
-) : LectureListItemInterface
+) : LectureListItemInterface {
+    fun toLectureListItem(): LectureListItem {
+        return LectureListItem(
+            id,
+            name,
+            iconUrl,
+            numberOfTopics,
+            teacherName,
+            lastAttemptedTs,
+            bookmarked,
+            progress
+        )
+    }
+}
