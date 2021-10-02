@@ -1,11 +1,18 @@
 <resources>
+    <!--  app name  -->
     <string name="app_name">Lecture List</string>
+
+    <!--  url  -->
+    <string name="base_url_debug" translatable="false">https://native-team-code-test-api.herokuapp.com</string>
+    <string name="base_url_release" translatable="false">https://native-team-code-test-api.herokuapp.com</string>
+
+    <!--  Common  -->
     <string name="fav_add_description">Add shopping item</string>
     <string name="fav_save_description">Save shopping items</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     <string name="undo">Undo</string>
     <string name="removed">is removed</string>
-    <string name="base_url_debug" translatable="false">https://native-team-code-test-api.herokuapp.com</string>
-    <string name="base_url_release" translatable="false">https://native-team-code-test-api.herokuapp.com</string>
+    <string name="dialog_api_error">Api Error. Please refresh the app</string>
+    <string name="dialog_ok">OK</string>
 </resources>

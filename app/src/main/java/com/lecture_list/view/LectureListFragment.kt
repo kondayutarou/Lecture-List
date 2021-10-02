@@ -1,11 +1,13 @@
 package com.lecture_list.view
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.lecture_list.R
 import com.lecture_list.databinding.FragmentLectureListBinding
 import com.lecture_list.extension.getDialog
 import com.lecture_list.model.LectureListItem
@@ -70,10 +72,20 @@ class LectureListFragment : Fragment() {
 
         viewModel.errorRelay.observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                parentActivity.getDialog("Api Error. Please refresh the app", "")
+                parentActivity.getDialog(
+                    parentActivity.getString(R.string.dialog_api_error), "",
+                    errorDialogPositiveListener
+                )
+                    .show()
             }
             .addTo(compositeDisposable)
     }
+
+    private val errorDialogPositiveListener: DialogInterface.OnClickListener =
+        DialogInterface.OnClickListener { dialogInterface: DialogInterface, _: Int ->
+            binding.swipeContainer.isRefreshing = false
+            dialogInterface.dismiss()
+        }
 
     override fun onDestroyView() {
         super.onDestroyView()
