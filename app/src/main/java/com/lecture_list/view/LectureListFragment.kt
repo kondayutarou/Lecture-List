@@ -5,7 +5,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.lecture_list.R
 import com.lecture_list.databinding.FragmentLectureListBinding
@@ -50,6 +52,15 @@ class LectureListFragment : Fragment() {
         binding.recycler.apply {
             adapter = recyclerAdapter
             layoutManager = LinearLayoutManager(parentActivity)
+
+            val itemDecoration =
+                DividerItemDecoration(parentActivity, DividerItemDecoration.VERTICAL)
+            val drawable =
+                AppCompatResources.getDrawable(parentActivity, R.drawable.layout_vertical_spacing)
+            drawable?.let {
+                itemDecoration.setDrawable(it)
+                addItemDecoration(itemDecoration)
+            }
         }
 
         binding.swipeContainer.setOnRefreshListener {
