@@ -1,5 +1,7 @@
 package com.lecture_list.model
 
+import com.lecture_list.data.LectureListDB
+
 data class LectureListItem(
     override val id: String,
     override val name: String,
@@ -22,5 +24,18 @@ data class LectureListItem(
                 lastAttemptedTs = listApiItem.lastAttemptedTs
             )
         }
+    }
+
+    fun toDBClass(): LectureListDB {
+        return LectureListDB(
+            id,
+            name,
+            iconUrl,
+            numberOfTopics,
+            teacherName,
+            lastAttemptedTs,
+            bookmarked,
+            progress
+        )
     }
 }

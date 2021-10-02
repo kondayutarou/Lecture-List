@@ -86,6 +86,23 @@ class MainViewModel @Inject constructor(
             .addTo(compositeDisposable)
     }
 
+    fun saveData() {
+        val currentLectureList =
+            lectureListForView.value?.map { return@map it.toDBClass() } ?: return
+
+        db.lectureListItemDao()
+            .deleteAll()
+            .subscribeOn(Schedulers.io())
+            .andThen {
+                db.lectureListItemDao().insertAll(currentLectureList)
+            }
+            .subscribe {
+                Logger.d("Save finished")
+            }
+            .addTo(compositeDisposable)
+
+    }
+
     fun finish() {
         compositeDisposable.clear()
     }

@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.lecture_list.R
+import com.lecture_list.data.source.local.AppDatabase
 import com.lecture_list.databinding.FragmentLectureListBinding
 import com.lecture_list.extension.getDialog
 import com.lecture_list.model.LectureListItem
