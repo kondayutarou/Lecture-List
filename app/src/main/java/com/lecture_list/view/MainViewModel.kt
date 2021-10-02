@@ -58,7 +58,6 @@ class MainViewModel @Inject constructor(
                         lectureListItem
                     )
                 }
-                val indexList = mutableListOf<Int>()
                 observableList.forEach { pair ->
                     pair.first.blockingSubscribeBy(onSuccess = { apiItem ->
                         val matchIndex = newList.indexOfFirst { it.id == apiItem.id }
