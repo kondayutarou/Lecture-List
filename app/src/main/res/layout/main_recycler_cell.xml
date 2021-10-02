@@ -68,7 +68,8 @@
                         android:layout_height="wrap_content"
                         android:text="@string/bookmark_explanation" />
 
-                    <CheckBox
+                    <com.google.android.material.checkbox.MaterialCheckBox
+                        style="@style/Checkbox"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:checked="@{courseInfo.bookmarked}" />

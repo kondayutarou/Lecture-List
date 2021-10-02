@@ -16,4 +16,10 @@
         <item name="android:layout_marginVertical" tools:targetApi="o">16dp</item>
         <item name="cardUseCompatPadding">false</item>
     </style>
+
+    <!--  Checkbox  -->
+    <style name="Checkbox" parent="Widget.AppCompat.CompoundButton.CheckBox">
+        <item name="minHeight">0dp</item>
+        <item name="minWidth">0dp</item>
+    </style>
 </resources>
