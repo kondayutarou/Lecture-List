@@ -37,6 +37,7 @@
 
                 <TextView
                     android:id="@+id/course_name"
+                    style="@style/TitleText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@{courseInfo.name}"
@@ -73,6 +74,7 @@
                 </LinearLayout>
 
                 <com.google.android.material.progressindicator.LinearProgressIndicator
+                    style="@style/CustomProgressBarHorizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom"
