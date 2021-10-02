@@ -92,7 +92,7 @@ class LectureListFragment : Fragment() {
             }
             .addTo(compositeDisposable)
 
-        viewModel.errorRelay.observeOn(AndroidSchedulers.mainThread())
+        viewModel.serverErrorRelay.observeOn(AndroidSchedulers.mainThread())
             .subscribe {
                 viewModel.loadData()
                 parentActivity.getDialog(

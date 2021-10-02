@@ -6,6 +6,7 @@ import com.jakewharton.rxrelay3.PublishRelay
 import com.lecture_list.data.source.api.lecture.list.LectureListApiRepositoryInterface
 import com.lecture_list.data.source.api.lecture.progress.LectureProgressApiRepositoryInterface
 import com.lecture_list.data.source.local.AppDatabase
+import com.lecture_list.model.ApiNetworkingError
 import com.lecture_list.model.ApiServerError
 import com.lecture_list.model.LectureListApiItem
 import com.lecture_list.model.LectureListItem
@@ -27,7 +28,8 @@ class MainViewModel @Inject constructor(
     val lectureListForProgressApi = PublishRelay.create<List<LectureListApiItem>>()
     val lectureListForView = BehaviorRelay.create<List<LectureListItem>>()
 
-    val errorRelay = PublishRelay.create<ApiServerError>()
+    val serverErrorRelay = PublishRelay.create<ApiServerError>()
+    val networkErrorRelay = PublishRelay.create<ApiNetworkingError>()
     val progressApiErrorRelay = PublishRelay.create<String>()
 
     fun start() {
@@ -41,9 +43,10 @@ class MainViewModel @Inject constructor(
                 lectureListForProgressApi.accept(list)
                 Logger.d(list.map { it.id })
             }, onError = {
-                val error = it as? ApiServerError ?: return@subscribeBy
-                errorRelay.accept(error)
-                Logger.d(error)
+                val serverError = it as? ApiServerError
+                val networkingError = it as? ApiNetworkingError
+                serverError?.let { error -> serverErrorRelay.accept(error) }
+                networkingError?.let { error -> networkErrorRelay.accept(error) }
             })
             .addTo(compositeDisposable)
     }
