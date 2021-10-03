@@ -68,7 +68,7 @@ class MainViewModel @Inject constructor(
         val newList = mutableListOf<LectureListItem>()
         lectureListForProgressApi.observeOn(Schedulers.io())
             .flatMap {
-                val oldList = it.first
+                val oldList = mergeApiWithDBData(it)
                 val observableList = oldList.map { lectureListItem ->
                     Pair(
                         lectureProgressApiRepository.fetchLectureListObservable(lectureListItem.id),
@@ -80,7 +80,7 @@ class MainViewModel @Inject constructor(
                         val matchIndex = newList.indexOfFirst { it.id == apiItem.id }
                         if (matchIndex == -1) {
                             // At the time of first api call
-                            val newItem = LectureListItem.fromListApi(pair.second)
+                            val newItem = pair.second
                             newItem.progress = apiItem.progress
                             newList.add(newItem)
                         } else {
@@ -102,6 +102,26 @@ class MainViewModel @Inject constructor(
                 Logger.d(it)
             })
             .addTo(compositeDisposable)
+    }
+
+    private fun mergeApiWithDBData(dataPair: Pair<List<LectureListApiItem>, List<LectureListDB>?>): List<LectureListItem> {
+        val newList = (dataPair.first.map { LectureListItem.fromListApi(it) }).toMutableList()
+
+        // If Database data is empty, return apiItemList
+        val dbList =
+            dataPair.second ?: return newList
+
+        val convertedDbList = dbList.map { it.toLectureListItem() }
+        newList.mapIndexed { index, item ->
+            val dbListIndex =
+                convertedDbList.indexOfFirst { it.id == item.id }
+            if (dbListIndex != -1) {
+                val bookmark = convertedDbList[dbListIndex].bookmarked
+                item.bookmarked = bookmark
+            }
+        }
+
+        return newList
     }
 
     fun saveData() {
