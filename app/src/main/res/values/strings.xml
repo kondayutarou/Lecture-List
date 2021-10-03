@@ -7,18 +7,13 @@
     <string name="base_url_release" translatable="false">https://native-team-code-test-api.herokuapp.com</string>
 
     <!--  Common  -->
-    <string name="fav_add_description">Add shopping item</string>
-    <string name="fav_save_description">Save shopping items</string>
-    <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
-    <string name="undo">Undo</string>
-    <string name="removed">is removed</string>
-    <string name="dialog_api_error">Api Error. Please refresh the app</string>
+    <string name="dialog_api_error">Api Error. Please refresh the app by pulling down the screen.</string>
     <string name="dialog_ok">OK</string>
 
     <!--  LectureListFragment  -->
     <string name="bookmark_explanation">Bookmark</string>
     <string name="teacher_image_desc">Image of teacher</string>
-    <string name="progress_fetch_error_display">The progress below is not updated</string>
-    <string name="lecture_counter">%s Lectures</string>
+    <string name="progress_fetch_error_display">The progress bar below is not the latest</string>
+    <string name="lecture_counter">%s lectures in total</string>
 </resources>
