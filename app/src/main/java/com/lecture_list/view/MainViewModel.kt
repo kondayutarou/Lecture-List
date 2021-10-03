@@ -7,10 +7,7 @@ import com.lecture_list.data.LectureListDB
 import com.lecture_list.data.source.api.lecture.list.LectureListApiRepositoryInterface
 import com.lecture_list.data.source.api.lecture.progress.LectureProgressApiRepositoryInterface
 import com.lecture_list.data.source.local.AppDatabase
-import com.lecture_list.model.ApiNetworkingError
-import com.lecture_list.model.ApiServerError
-import com.lecture_list.model.LectureListApiItem
-import com.lecture_list.model.LectureListItem
+import com.lecture_list.model.*
 import com.orhanobut.logger.Logger
 import io.reactivex.rxjava3.annotations.NonNull
 import io.reactivex.rxjava3.core.Observable
@@ -75,21 +72,7 @@ class MainViewModel @Inject constructor(
                 }
                 observableList.forEach { pair ->
                     pair.first.blockingSubscribeBy(onSuccess = { apiItem ->
-                        val matchIndex = newList.indexOfFirst { it.id == apiItem.id }
-                        if (matchIndex == -1) {
-                            // At the time of first api call
-                            val newItem = pair.second
-                            newItem.progress = apiItem.progress
-                            newItem.progressError = false
-                            newList.add(newItem)
-                        } else {
-                            // From second api call onwards, replace items with identical id
-                            newList[matchIndex].apply {
-                                progress = apiItem.progress
-                                progressError = false
-                            }
-                            Logger.d(newList[matchIndex].progress)
-                        }
+                        progressApiOnSuccess(newList, pair, apiItem)
                     }, onError = { throwable ->
                         val pairId = pair.second.id
                         newList.find { it.id == pairId }?.progressError = true
@@ -104,6 +87,28 @@ class MainViewModel @Inject constructor(
                 Logger.d(it)
             })
             .addTo(compositeDisposable)
+    }
+
+    private fun progressApiOnSuccess(
+        newList: MutableList<LectureListItem>,
+        observableListItem: Pair<Single<LectureProgressApiItem>, LectureListItem>,
+        apiItem: LectureProgressApiItem
+    ) {
+        val matchIndex = newList.indexOfFirst { it.id == apiItem.id }
+        if (matchIndex == -1) {
+            // At the time of first api call
+            val newItem = observableListItem.second
+            newItem.progress = apiItem.progress
+            newItem.progressError = false
+            newList.add(newItem)
+        } else {
+            // From second api call onwards, replace items with identical id
+            newList[matchIndex].apply {
+                progress = apiItem.progress
+                progressError = false
+            }
+            Logger.d(newList[matchIndex].progress)
+        }
     }
 
     private fun mergeApiWithDBData(dataPair: Pair<List<LectureListApiItem>, List<LectureListDB>?>): List<LectureListItem> {
