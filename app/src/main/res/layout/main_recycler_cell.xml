@@ -58,6 +58,7 @@
 
                     <TextView
                         android:id="@+id/teacher_name"
+                        style="@style/Text.Medium"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@{courseInfo.teacherName}"
@@ -66,6 +67,7 @@
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
+                        style="@style/Text.Medium"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@{String.format(@string/lecture_counter, courseInfo.numberOfTopics)}"
@@ -78,11 +80,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
+                    app:layout_constraintBottom_toTopOf="@id/progress_indicator"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/first_container">
 
                     <TextView
+                        style="@style/Text.Medium"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/bookmark_explanation" />
@@ -96,6 +100,7 @@
 
                     <TextView
                         android:id="@+id/progress_error_display"
+                        style="@style/Text.Small"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/progress_fetch_error_display"
