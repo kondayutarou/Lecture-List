@@ -126,8 +126,13 @@ class MainViewModel @Inject constructor(
             .addTo(compositeDisposable)
     }
 
-    fun changeBookmarkState(cellIndex: Int, bookmark: Boolean) {
-        Logger.d("${bookmark} at ${cellIndex}")
+    fun changeBookmarkState(bookmark: Boolean, item: LectureListItem) {
+        item.bookmarked = bookmark
+        db.lectureListItemDao().update(item.toDBClass()).subscribeOn(Schedulers.io())
+            .subscribe {
+                Logger.d("Bookmark stored")
+            }
+            .addTo(compositeDisposable)
     }
 
     override fun onCleared() {

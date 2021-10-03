@@ -32,8 +32,8 @@ class LectureListRecyclerAdapter(
 
         holder.binding.courseInfo = item
 
-        holder.binding.bookmark.setOnCheckedChangeListener { buttonView, isChecked ->
-            viewModel.changeBookmarkState(position, isChecked)
+        holder.binding.bookmark.setOnCheckedChangeListener { _, isChecked ->
+            viewModel.changeBookmarkState(isChecked, item)
         }
 
         holder.binding.executePendingBindings()
