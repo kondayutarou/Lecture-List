@@ -82,10 +82,14 @@ class MainViewModel @Inject constructor(
                             // At the time of first api call
                             val newItem = pair.second
                             newItem.progress = apiItem.progress
+                            newItem.progressError = false
                             newList.add(newItem)
                         } else {
                             // From second api call onwards, replace items with identical id
-                            newList[matchIndex].progress = apiItem.progress
+                            newList[matchIndex].apply {
+                                progress = apiItem.progress
+                                progressError = false
+                            }
                             Logger.d(newList[matchIndex].progress)
                         }
                     }, onError = { throwable ->
