@@ -35,7 +35,6 @@ class MainViewModel @Inject constructor(
 
     val serverErrorRelay = PublishRelay.create<ApiServerError>()
     val networkErrorRelay = PublishRelay.create<ApiNetworkingError>()
-    val progressApiErrorRelay = PublishRelay.create<String>()
 
     fun start() {
         loadApi()
