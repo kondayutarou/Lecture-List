@@ -76,7 +76,7 @@
                         android:checked="@{courseInfo.bookmarked}" />
 
                     <TextView
-                        android:id="@+id/progress_errpr_display"
+                        android:id="@+id/progress_error_display"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/progress_fetch_error_display"

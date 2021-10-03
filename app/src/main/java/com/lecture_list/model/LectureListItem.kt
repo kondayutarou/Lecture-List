@@ -10,7 +10,8 @@ data class LectureListItem(
     override val teacherName: String,
     override val lastAttemptedTs: Int,
     override var bookmarked: Boolean = false,
-    override var progress: Int? = null
+    override var progress: Int? = null,
+    var progressError: Boolean = false
 ) : LectureListItemInterface {
     companion object {
         // Init LectureListItem from LectureListApi response
