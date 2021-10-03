@@ -22,4 +22,7 @@ interface LectureListItemDao {
 
     @Query("DELETE FROM lecturelistdb")
     fun deleteAll(): Completable
+
+    @Update
+    fun update(vararg lectureItem: LectureListDB): Completable
 }

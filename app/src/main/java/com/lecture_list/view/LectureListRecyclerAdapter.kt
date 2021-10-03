@@ -10,7 +10,8 @@ import com.squareup.picasso.Picasso
 
 class LectureListRecyclerAdapter(
     private val context: Context,
-    private var itemList: ArrayList<LectureListItem>
+    private var itemList: ArrayList<LectureListItem>,
+    private val viewModel: MainViewModel
 ) : RecyclerView.Adapter<LectureListRecyclerAdapter.ViewHolder>() {
     private lateinit var recyclerBinding: MainRecyclerCellBinding
 
@@ -30,6 +31,11 @@ class LectureListRecyclerAdapter(
             .into(holder.binding.teacherImage)
 
         holder.binding.courseInfo = item
+
+        holder.binding.bookmark.setOnCheckedChangeListener { _, isChecked ->
+            viewModel.changeBookmarkState(isChecked, item)
+        }
+
         holder.binding.executePendingBindings()
     }
 

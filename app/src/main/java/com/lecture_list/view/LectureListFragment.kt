@@ -50,7 +50,8 @@ class LectureListFragment : Fragment() {
     }
 
     private fun initViews() {
-        recyclerAdapter = LectureListRecyclerAdapter(parentActivity, ArrayList<LectureListItem>())
+        recyclerAdapter =
+            LectureListRecyclerAdapter(parentActivity, ArrayList<LectureListItem>(), viewModel)
         binding.recycler.apply {
             adapter = recyclerAdapter
             layoutManager = LinearLayoutManager(parentActivity)
@@ -97,7 +98,6 @@ class LectureListFragment : Fragment() {
         Observable.merge(viewModel.serverErrorRelay, viewModel.networkErrorRelay)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                viewModel.loadData()
                 parentActivity.getDialog(
                     parentActivity.getString(R.string.dialog_api_error), "",
                     errorDialogPositiveListener
@@ -115,7 +115,6 @@ class LectureListFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        viewModel.finish()
         compositeDisposable.clear()
     }
 }
