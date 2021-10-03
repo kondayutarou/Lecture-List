@@ -50,7 +50,8 @@ class LectureListFragment : Fragment() {
     }
 
     private fun initViews() {
-        recyclerAdapter = LectureListRecyclerAdapter(parentActivity, ArrayList<LectureListItem>())
+        recyclerAdapter =
+            LectureListRecyclerAdapter(parentActivity, ArrayList<LectureListItem>(), viewModel)
         binding.recycler.apply {
             adapter = recyclerAdapter
             layoutManager = LinearLayoutManager(parentActivity)
@@ -115,7 +116,6 @@ class LectureListFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        viewModel.finish()
         compositeDisposable.clear()
     }
 }

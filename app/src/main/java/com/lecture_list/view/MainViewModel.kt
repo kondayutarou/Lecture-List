@@ -126,8 +126,8 @@ class MainViewModel @Inject constructor(
             .addTo(compositeDisposable)
     }
 
-    fun finish() {
-        compositeDisposable.clear()
+    fun changeBookmarkState(cellIndex: Int, bookmark: Boolean) {
+        Logger.d("${bookmark} at ${cellIndex}")
     }
 
     override fun onCleared() {
