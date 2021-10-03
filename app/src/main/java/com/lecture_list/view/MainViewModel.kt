@@ -3,6 +3,7 @@ package com.lecture_list.view
 import androidx.lifecycle.ViewModel
 import com.jakewharton.rxrelay3.BehaviorRelay
 import com.jakewharton.rxrelay3.PublishRelay
+import com.lecture_list.data.LectureListDB
 import com.lecture_list.data.source.api.lecture.list.LectureListApiRepositoryInterface
 import com.lecture_list.data.source.api.lecture.progress.LectureProgressApiRepositoryInterface
 import com.lecture_list.data.source.local.AppDatabase
@@ -11,11 +12,15 @@ import com.lecture_list.model.ApiServerError
 import com.lecture_list.model.LectureListApiItem
 import com.lecture_list.model.LectureListItem
 import com.orhanobut.logger.Logger
+import io.reactivex.rxjava3.annotations.NonNull
+import io.reactivex.rxjava3.core.Maybe
 import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.kotlin.addTo
 import io.reactivex.rxjava3.kotlin.blockingSubscribeBy
 import io.reactivex.rxjava3.kotlin.subscribeBy
+import io.reactivex.rxjava3.kotlin.zipWith
 import io.reactivex.rxjava3.schedulers.Schedulers
 import javax.inject.Inject
 
@@ -25,7 +30,8 @@ class MainViewModel @Inject constructor(
     private val lectureProgressApiRepository: LectureProgressApiRepositoryInterface
 ) : ViewModel() {
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
-    val lectureListForProgressApi = PublishRelay.create<List<LectureListApiItem>>()
+    val lectureListForProgressApi =
+        PublishRelay.create<Pair<List<LectureListApiItem>, List<LectureListDB>?>>()
     val lectureListForView = BehaviorRelay.create<List<LectureListItem>>()
 
     val serverErrorRelay = PublishRelay.create<ApiServerError>()
@@ -39,9 +45,16 @@ class MainViewModel @Inject constructor(
 
     fun loadApi() {
         lectureListApiRepository.fetchLectureListObservable()
-            .subscribeBy(onSuccess = { list ->
-                lectureListForProgressApi.accept(list)
-                Logger.d(list.map { it.id })
+            .zipWith(loadData())
+            .subscribeBy(onSuccess = { pair ->
+                // Retrieve stored lectures if available
+                if (pair.second.isNotEmpty()) {
+                    lectureListForProgressApi.accept(Pair(pair.first, pair.second))
+                    Logger.d("success")
+                } else {
+                    lectureListForProgressApi.accept(Pair(pair.first, null))
+                    Logger.d(pair.first.map { it.id })
+                }
             }, onError = {
                 val serverError = it as? ApiServerError
                 val networkingError = it as? ApiNetworkingError
@@ -55,7 +68,7 @@ class MainViewModel @Inject constructor(
         val newList = mutableListOf<LectureListItem>()
         lectureListForProgressApi.observeOn(Schedulers.io())
             .flatMap {
-                val oldList = it
+                val oldList = it.first
                 val observableList = oldList.map { lectureListItem ->
                     Pair(
                         lectureProgressApiRepository.fetchLectureListObservable(lectureListItem.id),
@@ -113,17 +126,9 @@ class MainViewModel @Inject constructor(
 
     }
 
-    fun loadData() {
-        db.lectureListItemDao().getAll().subscribeOn(Schedulers.io())
-            .filter { it.isNotEmpty() }
+    fun loadData(): @NonNull Single<List<LectureListDB>> {
+        return db.lectureListItemDao().getAll().subscribeOn(Schedulers.io())
             .doOnSubscribe { Logger.d("list loaded subscribed") }
-            .subscribe { list ->
-                val listForView = list.map { it.toLectureListItem() }
-                Logger.d("list loaded")
-                Logger.d(list.toString())
-                lectureListForView.accept(listForView)
-            }
-            .addTo(compositeDisposable)
     }
 
     fun changeBookmarkState(bookmark: Boolean, item: LectureListItem) {

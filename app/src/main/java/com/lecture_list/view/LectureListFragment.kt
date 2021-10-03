@@ -98,7 +98,6 @@ class LectureListFragment : Fragment() {
         Observable.merge(viewModel.serverErrorRelay, viewModel.networkErrorRelay)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                viewModel.loadData()
                 parentActivity.getDialog(
                     parentActivity.getString(R.string.dialog_api_error), "",
                     errorDialogPositiveListener
