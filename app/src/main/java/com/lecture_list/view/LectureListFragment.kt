@@ -20,6 +20,7 @@ import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.kotlin.addTo
 import io.reactivex.rxjava3.schedulers.Schedulers
+import kotlinx.android.synthetic.main.fragment_lecture_list.*
 import javax.inject.Inject
 
 @AndroidEntryPoint

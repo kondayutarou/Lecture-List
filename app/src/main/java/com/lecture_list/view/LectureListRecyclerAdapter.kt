@@ -2,6 +2,7 @@ package com.lecture_list.view
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.lecture_list.databinding.MainRecyclerCellBinding
@@ -31,9 +32,13 @@ class LectureListRecyclerAdapter(
             .into(holder.binding.teacherImage)
 
         holder.binding.courseInfo = item
-
         holder.binding.bookmark.setOnCheckedChangeListener { _, isChecked ->
             viewModel.changeBookmarkState(isChecked, item)
+        }
+        if (item.progressError) {
+            holder.binding.progressErrorDisplay.visibility = View.VISIBLE
+        } else {
+            holder.binding.progressErrorDisplay.visibility = View.INVISIBLE
         }
 
         holder.binding.executePendingBindings()
