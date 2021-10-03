@@ -60,12 +60,6 @@ class LectureListRecyclerAdapter(
         this.itemList.clear()
     }
 
-    fun updateItem(id: String, errorVisibilityState: Boolean) {
-        val replaceIndex = this.itemList.indexOfFirst { it.id == id }
-        this.itemList[replaceIndex].progressError = errorVisibilityState
-        notifyItemChanged(replaceIndex)
-    }
-
     class ViewHolder(val binding: MainRecyclerCellBinding) : RecyclerView.ViewHolder(binding.root) {
     }
 }

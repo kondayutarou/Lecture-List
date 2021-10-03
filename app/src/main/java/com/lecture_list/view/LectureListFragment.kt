@@ -106,12 +106,6 @@ class LectureListFragment : Fragment() {
                     .show()
             }
             .addTo(compositeDisposable)
-
-        viewModel.progressApiErrorRelay.observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                recyclerAdapter.updateItem(it, true)
-            }
-            .addTo(compositeDisposable)
     }
 
     private val errorDialogPositiveListener: DialogInterface.OnClickListener =

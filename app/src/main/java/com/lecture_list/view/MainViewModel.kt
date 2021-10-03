@@ -13,7 +13,6 @@ import com.lecture_list.model.LectureListApiItem
 import com.lecture_list.model.LectureListItem
 import com.orhanobut.logger.Logger
 import io.reactivex.rxjava3.annotations.NonNull
-import io.reactivex.rxjava3.core.Maybe
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.disposables.CompositeDisposable
@@ -93,8 +92,8 @@ class MainViewModel @Inject constructor(
                             Logger.d(newList[matchIndex].progress)
                         }
                     }, onError = { throwable ->
-                        Logger.d(throwable)
-                        progressApiErrorRelay.accept(pair.second.id)
+                        val pairId = pair.second.id
+                        newList.find { it.id == pairId }?.progressError = true
                     })
                 }
                 Observable.just(newList)
