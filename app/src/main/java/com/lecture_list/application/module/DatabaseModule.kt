@@ -1,4 +1,4 @@
-package com.lecture_list.application
+package com.lecture_list.application.module
 
 import android.content.Context
 import androidx.room.Room

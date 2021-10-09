@@ -1,20 +1,13 @@
-package com.lecture_list.application
+package com.lecture_list.application.module
 
 import android.content.Context
-import androidx.room.Room
 import com.lecture_list.BuildConfig
 import com.lecture_list.R
-import com.lecture_list.data.LectureListRepository
-import com.lecture_list.data.LectureListRepositoryImpl
-import com.lecture_list.data.source.api.lecture.list.LectureListRemoteRepositoryImpl
+import com.lecture_list.application.OkHttpClientProvider
 import com.lecture_list.data.source.api.lecture.list.LectureListRemoteRepository
-import com.lecture_list.data.source.api.lecture.progress.LectureProgressRemoteRepositoryImpl
+import com.lecture_list.data.source.api.lecture.list.LectureListRemoteRepositoryImpl
 import com.lecture_list.data.source.api.lecture.progress.LectureProgressRemoteRepository
-import com.lecture_list.data.source.local.AppDatabase
-import com.lecture_list.data.source.local.LectureListItemDao
-import com.lecture_list.data.source.local.LectureLocalRepository
-import com.lecture_list.data.source.local.LectureLocalRepositoryImpl
-import com.lecture_list.view.MainViewModel
+import com.lecture_list.data.source.api.lecture.progress.LectureProgressRemoteRepositoryImpl
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
@@ -24,25 +17,15 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import hu.akarnokd.rxjava3.retrofit.RxJava3CallAdapterFactory
 import okhttp3.OkHttpClient
-import javax.inject.Singleton
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import javax.inject.Named
+import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-class ApplicationModule {
-    companion object {
-        const val BASE_URL = "base_url"
-    }
-
-    @Provides
-    fun provideContext(@ApplicationContext context: Context): Context {
-        return context
-    }
-
+class ApiModule {
     // API
-
     @Singleton
     @Provides
     fun provideOkHttpClientBuilder(): OkHttpClientProvider {
@@ -65,7 +48,7 @@ class ApplicationModule {
 
     @Singleton
     @Provides
-    @Named(BASE_URL)
+    @Named(ApplicationModule.BASE_URL)
     fun provideBaseUrl(@ApplicationContext context: Context): String {
         return if (BuildConfig.DEBUG) {
             context.getString(R.string.base_url_debug)
@@ -78,7 +61,7 @@ class ApplicationModule {
     @Provides
     fun provideRetrofit(
         client: OkHttpClient, moshi: Moshi,
-        @Named(BASE_URL) baseUrl: String
+        @Named(ApplicationModule.BASE_URL) baseUrl: String
     ): Retrofit {
         return Retrofit.Builder()
             .client(client)
@@ -104,19 +87,4 @@ class ApplicationModule {
     ): LectureProgressRemoteRepository {
         return LectureProgressRemoteRepositoryImpl(retrofit)
     }
-
-    @Singleton
-    @Provides
-    fun provideLectureListRepository(
-        localRepository: LectureLocalRepository,
-        lectureListRemoteRepository: LectureListRemoteRepository,
-        lectureProgressRemoteRepository: LectureProgressRemoteRepository
-    ): LectureListRepository {
-        return LectureListRepositoryImpl(localRepository, lectureListRemoteRepository, lectureProgressRemoteRepository)
-    }
-
-    @Singleton
-    @Provides
-    fun provideMainViewModel(lectureListRepository: LectureListRepository):
-            MainViewModel = MainViewModel(lectureListRepository)
 }
