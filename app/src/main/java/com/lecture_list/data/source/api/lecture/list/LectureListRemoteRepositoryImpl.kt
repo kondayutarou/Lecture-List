@@ -1,6 +1,5 @@
 package com.lecture_list.data.source.api.lecture.list
 
-import com.lecture_list.model.LectureListApiItem
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
 import retrofit2.Retrofit

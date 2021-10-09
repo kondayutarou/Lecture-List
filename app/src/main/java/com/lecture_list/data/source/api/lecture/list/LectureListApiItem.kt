@@ -1,5 +1,6 @@
-package com.lecture_list.model
+package com.lecture_list.data.source.api.lecture.list
 
+import com.lecture_list.model.LectureListItem
 import com.squareup.moshi.Json
 
 data class LectureListApiItem(

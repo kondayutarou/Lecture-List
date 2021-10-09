@@ -1,4 +1,4 @@
-package com.lecture_list.model
+package com.lecture_list.data.source.api.lecture.progress
 
 import com.squareup.moshi.Json
 

@@ -2,13 +2,11 @@ package com.lecture_list.data
 
 import com.lecture_list.data.source.api.lecture.list.LectureListRemoteRepository
 import com.lecture_list.data.source.api.lecture.progress.LectureProgressRemoteRepository
-import com.lecture_list.data.source.local.AppDatabase
 import com.lecture_list.data.source.local.LectureLocalRepository
 import com.lecture_list.model.LectureListItem
-import com.lecture_list.model.LectureProgressApiItem
+import com.lecture_list.data.source.api.lecture.progress.LectureProgressApiItem
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
-import io.reactivex.rxjava3.disposables.CompositeDisposable
 import javax.inject.Inject
 
 /**
@@ -28,8 +26,8 @@ class LectureListRepositoryImpl @Inject constructor(
         TODO("Not yet implemented")
     }
 
-    override fun saveLectureList(): Completable {
-        return localRepository.saveList()
+    override fun saveLectureList(list: List<LectureListItem>): Completable {
+        return localRepository.saveList(list)
     }
 
     override fun saveProgress(): Completable {

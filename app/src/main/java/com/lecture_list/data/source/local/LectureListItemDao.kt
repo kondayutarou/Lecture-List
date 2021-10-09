@@ -7,21 +7,24 @@ import io.reactivex.rxjava3.core.Single
 
 @Dao
 interface LectureListItemDao {
-    @Query("SELECT * FROM lecturelistdb")
-    fun getAll(): Single<List<LectureListDB>>
+    @Query("SELECT * FROM lecturelistdbitem WHERE id == :id")
+    fun get(id: String): Single<LectureListDBItem>
+
+    @Query("SELECT * FROM lecturelistdbitem")
+    fun getAll(): Single<List<LectureListDBItem>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(vararg lectureList: LectureListDB): Maybe<Void>
+    fun insert(vararg lectureListItem: LectureListDBItem): Maybe<Void>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertAll(items: List<LectureListDB>): Completable
+    fun insertAll(items: List<LectureListDBItem>): Completable
 
     @Delete
-    fun delete(lectureList: LectureListDB): Maybe<Void>
+    fun delete(lectureListItem: LectureListDBItem): Maybe<Void>
 
-    @Query("DELETE FROM lecturelistdb")
+    @Query("DELETE FROM lecturelistdbitem")
     fun deleteAll(): Completable
 
     @Update
-    fun update(vararg lectureItem: LectureListDB): Completable
+    fun update(vararg lectureItem: LectureListDBItem): Completable
 }
