@@ -13,4 +13,8 @@ data class LectureListApiItem(
     val teacherName: String,
     @Json(name = "last_attempted_ts")
     val lastAttemptedTs: Int
-)
+) {
+    fun toModel(): LectureListItem {
+        return LectureListItem(id, name, iconUrl, numberOfTopics, teacherName, lastAttemptedTs)
+    }
+}

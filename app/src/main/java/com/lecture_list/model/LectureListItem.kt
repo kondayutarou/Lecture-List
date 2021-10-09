@@ -13,20 +13,6 @@ data class LectureListItem(
     override var progress: Int? = null,
     var progressError: Boolean = false
 ) : LectureListItemInterface {
-    companion object {
-        // Init LectureListItem from LectureListApi response
-        fun fromListApi(listApiItem: LectureListApiItem): LectureListItem {
-            return LectureListItem(
-                id = listApiItem.id,
-                name = listApiItem.name,
-                iconUrl = listApiItem.iconUrl,
-                numberOfTopics = listApiItem.numberOfTopics,
-                teacherName = listApiItem.teacherName,
-                lastAttemptedTs = listApiItem.lastAttemptedTs
-            )
-        }
-    }
-
     fun toDBClass(): LectureListDB {
         return LectureListDB(
             id,

@@ -18,6 +18,10 @@ class MainViewModel @Inject constructor(
             dataLoading.accept(true)
         }
 
-        repository.getLectureList()
+        repository.getLectureList().subscribe({
+            dataLoaded = true
+        }, {
+
+        })
     }
 }
