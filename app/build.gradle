@@ -56,7 +56,7 @@ dependencies {
     implementation 'com.jakewharton.rxrelay3:rxrelay:3.0.1'
 
     // logger
-    implementation 'com.orhanobut:logger:2.1.1'
+    implementation 'com.jakewharton.timber:timber:4.7.1'
 
     // Room
     implementation "androidx.room:room-runtime:$room_version"
@@ -94,4 +94,7 @@ dependencies {
     implementation 'com.squareup.picasso:picasso:2.8'
 
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
+
+    // leak
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'
 }

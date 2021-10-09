@@ -10,6 +10,10 @@
         <variable
             name="courseInfo"
             type="com.lecture_list.model.LectureListItem" />
+
+        <variable
+            name="viewModel"
+            type="com.lecture_list.view.MainViewModel" />
     </data>
 
     <com.google.android.material.card.MaterialCardView

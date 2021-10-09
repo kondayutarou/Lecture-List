@@ -9,17 +9,15 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.jakewharton.rxrelay3.PublishRelay
 import com.lecture_list.R
 import com.lecture_list.databinding.FragmentLectureListBinding
-import com.lecture_list.extension.getDialog
+import com.lecture_list.extension.isInternetAvailable
 import com.lecture_list.model.LectureListItem
-import com.orhanobut.logger.Logger
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.kotlin.addTo
-import io.reactivex.rxjava3.schedulers.Schedulers
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -45,10 +43,15 @@ class LectureListFragment : Fragment() {
         binding = FragmentLectureListBinding.inflate(inflater, container, false)
         initViews()
         initRx()
-        if (savedInstanceState == null) {
-            viewModel.start()
-        }
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        if (savedInstanceState == null) {
+            val isOnline = parentActivity.isInternetAvailable()
+            viewModel.start(isOnline)
+        }
     }
 
     private fun initViews() {
@@ -69,49 +72,24 @@ class LectureListFragment : Fragment() {
         }
 
         binding.swipeContainer.setOnRefreshListener {
-            viewModel.loadApi()
+            viewModel.getList()
+            viewModel.loading.accept(true)
         }
     }
 
     private fun initRx() {
-        val sharedLectureList = viewModel.lectureListForView
-            .filter { it != null }.share()
+        viewModel.loading.observeOn(AndroidSchedulers.mainThread()).subscribe {
+            binding.swipeContainer.isRefreshing = it
+        }.addTo(compositeDisposable)
 
-        sharedLectureList.observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                Logger.d(it)
-                recyclerAdapter.clear()
-                recyclerAdapter.addItems(it)
-                recyclerAdapter.notifyDataSetChanged()
-                binding.swipeContainer.isRefreshing = false
-            }
-            .addTo(compositeDisposable)
-
-        sharedLectureList
-            // Do not save empty list
-            .filter { it.isNotEmpty() }
-            .observeOn(Schedulers.io())
-            .subscribe {
-                Logger.d(it)
-                viewModel.saveData()
-            }
-            .addTo(compositeDisposable)
-
-        Observable.merge(viewModel.serverErrorRelay, viewModel.networkErrorRelay)
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                parentActivity.getDialog(
-                    parentActivity.getString(R.string.dialog_api_error), "",
-                    errorDialogPositiveListener
-                )
-                    .show()
-            }
-            .addTo(compositeDisposable)
+        viewModel.lectureList.observeOn(AndroidSchedulers.mainThread()).subscribe {
+            recyclerAdapter.clear()
+            recyclerAdapter.addItems(it)
+        }.addTo(compositeDisposable)
     }
 
     private val errorDialogPositiveListener: DialogInterface.OnClickListener =
         DialogInterface.OnClickListener { dialogInterface: DialogInterface, _: Int ->
-            binding.swipeContainer.isRefreshing = false
             dialogInterface.dismiss()
         }
 

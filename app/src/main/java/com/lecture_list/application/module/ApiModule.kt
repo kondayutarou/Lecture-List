@@ -1,15 +1,13 @@
-package com.lecture_list.application
+package com.lecture_list.application.module
 
 import android.content.Context
-import androidx.room.Room
 import com.lecture_list.BuildConfig
 import com.lecture_list.R
-import com.lecture_list.data.source.api.lecture.list.LectureListApiRepository
-import com.lecture_list.data.source.api.lecture.list.LectureListApiRepositoryInterface
-import com.lecture_list.data.source.api.lecture.progress.LectureProgressApiRepository
-import com.lecture_list.data.source.api.lecture.progress.LectureProgressApiRepositoryInterface
-import com.lecture_list.data.source.local.AppDatabase
-import com.lecture_list.view.MainViewModel
+import com.lecture_list.application.OkHttpClientProvider
+import com.lecture_list.data.source.api.lecture.list.LectureListRemoteRepository
+import com.lecture_list.data.source.api.lecture.list.LectureListRemoteRepositoryImpl
+import com.lecture_list.data.source.api.lecture.progress.LectureProgressRemoteRepository
+import com.lecture_list.data.source.api.lecture.progress.LectureProgressRemoteRepositoryImpl
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
@@ -19,42 +17,15 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import hu.akarnokd.rxjava3.retrofit.RxJava3CallAdapterFactory
 import okhttp3.OkHttpClient
-import javax.inject.Singleton
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import javax.inject.Named
+import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-class ApplicationModule {
-    companion object {
-        const val BASE_URL = "base_url"
-    }
-
-    @Provides
-    fun provideContext(@ApplicationContext context: Context): Context {
-        return context
-    }
-
-    @Singleton
-    @Provides
-    fun provideDb(context: Context): AppDatabase {
-        return Room.databaseBuilder(
-            context,
-            AppDatabase::class.java, "database-name"
-        ).fallbackToDestructiveMigration().build()
-    }
-
-    @Singleton
-    @Provides
-    fun provideMainViewModel(db: AppDatabase,
-                             lectureListApiRepository: LectureListApiRepositoryInterface,
-                             lectureProgressApiRepository: LectureProgressApiRepositoryInterface):
-            MainViewModel {
-        return MainViewModel(db, lectureListApiRepository, lectureProgressApiRepository)
-    }
-
+class ApiModule {
+    // API
     @Singleton
     @Provides
     fun provideOkHttpClientBuilder(): OkHttpClientProvider {
@@ -77,7 +48,7 @@ class ApplicationModule {
 
     @Singleton
     @Provides
-    @Named(BASE_URL)
+    @Named(ApplicationModule.BASE_URL)
     fun provideBaseUrl(@ApplicationContext context: Context): String {
         return if (BuildConfig.DEBUG) {
             context.getString(R.string.base_url_debug)
@@ -90,7 +61,7 @@ class ApplicationModule {
     @Provides
     fun provideRetrofit(
         client: OkHttpClient, moshi: Moshi,
-        @Named(BASE_URL) baseUrl: String
+        @Named(ApplicationModule.BASE_URL) baseUrl: String
     ): Retrofit {
         return Retrofit.Builder()
             .client(client)
@@ -100,19 +71,20 @@ class ApplicationModule {
             .build()
     }
 
+    // API repositories
     @Singleton
     @Provides
-    fun provideLectureListApiRepository(
+    fun provideLectureListRemoteRepository(
         retrofit: Retrofit
-    ): LectureListApiRepositoryInterface {
-        return LectureListApiRepository(retrofit)
+    ): LectureListRemoteRepository {
+        return LectureListRemoteRepositoryImpl(retrofit)
     }
 
     @Singleton
     @Provides
-    fun provideLectureProgressApiRepository(
+    fun provideLectureProgressRemoteRepository(
         retrofit: Retrofit
-    ): LectureProgressApiRepositoryInterface {
-        return LectureProgressApiRepository(retrofit)
+    ): LectureProgressRemoteRepository {
+        return LectureProgressRemoteRepositoryImpl(retrofit)
     }
 }

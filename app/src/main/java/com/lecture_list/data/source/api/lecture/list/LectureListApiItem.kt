@@ -1,5 +1,6 @@
-package com.lecture_list.model
+package com.lecture_list.data.source.api.lecture.list
 
+import com.lecture_list.model.LectureListItem
 import com.squareup.moshi.Json
 
 data class LectureListApiItem(
@@ -13,4 +14,8 @@ data class LectureListApiItem(
     val teacherName: String,
     @Json(name = "last_attempted_ts")
     val lastAttemptedTs: Int
-)
+) {
+    fun toModel(): LectureListItem {
+        return LectureListItem(id, name, iconUrl, numberOfTopics, teacherName, lastAttemptedTs)
+    }
+}
