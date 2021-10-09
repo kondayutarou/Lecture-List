@@ -15,5 +15,7 @@ interface LectureListRepository {
 
     fun saveLectureList(list: List<LectureListItem>): Completable
 
+    fun loadLectureList(): Single<List<LectureListItem>>
+
     fun saveProgress(): Completable
 }

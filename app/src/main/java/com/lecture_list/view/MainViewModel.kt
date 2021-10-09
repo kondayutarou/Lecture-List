@@ -17,8 +17,12 @@ class MainViewModel @Inject constructor(
     val loading = PublishRelay.create<Boolean>()
     val lectureList = BehaviorRelay.create<List<LectureListItem>>()
 
-    fun start() {
-        getList()
+    fun start(isOnline: Boolean = false) {
+        if (isOnline) {
+            getList()
+        } else {
+            loadList()
+        }
     }
 
     fun getList() {
@@ -46,6 +50,14 @@ class MainViewModel @Inject constructor(
         repository.saveLectureList(list).subscribe {
             Timber.d("save completed")
         }.addTo(compositeDisposable)
+    }
+
+    fun loadList() {
+        repository.loadLectureList().subscribe({
+            lectureList.accept(it)
+        }, {
+
+        }).addTo(compositeDisposable)
     }
 
     override fun onCleared() {

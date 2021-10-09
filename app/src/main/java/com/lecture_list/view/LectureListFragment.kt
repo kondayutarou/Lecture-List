@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.jakewharton.rxrelay3.PublishRelay
 import com.lecture_list.R
 import com.lecture_list.databinding.FragmentLectureListBinding
+import com.lecture_list.extension.isInternetAvailable
 import com.lecture_list.model.LectureListItem
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -48,7 +49,8 @@ class LectureListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (savedInstanceState == null) {
-            viewModel.start()
+            val isOnline = parentActivity.isInternetAvailable()
+            viewModel.start(isOnline)
         }
     }
 

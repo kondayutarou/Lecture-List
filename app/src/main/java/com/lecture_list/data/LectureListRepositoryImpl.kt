@@ -7,6 +7,7 @@ import com.lecture_list.model.LectureListItem
 import com.lecture_list.data.source.api.lecture.progress.LectureProgressApiItem
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.schedulers.Schedulers
 import javax.inject.Inject
 
 /**
@@ -19,7 +20,7 @@ class LectureListRepositoryImpl @Inject constructor(
 ) : LectureListRepository {
     override fun getLectureList(): Single<List<LectureListItem>> {
         return lectureListRemoteRepository.fetchLectureListObservable()
-            .map { list -> list.map { it.toModel() } }
+            .map { list -> list.map { it.toModel() } }.subscribeOn(Schedulers.io())
     }
 
     override fun getProgress(): Single<LectureProgressApiItem> {
@@ -27,7 +28,12 @@ class LectureListRepositoryImpl @Inject constructor(
     }
 
     override fun saveLectureList(list: List<LectureListItem>): Completable {
-        return localRepository.saveList(list)
+        return localRepository.saveList(list).subscribeOn(Schedulers.io())
+    }
+
+    override fun loadLectureList(): Single<List<LectureListItem>> {
+        return localRepository.loadList().map { list -> list.map { it.toModel() } }
+            .subscribeOn(Schedulers.io())
     }
 
     override fun saveProgress(): Completable {
