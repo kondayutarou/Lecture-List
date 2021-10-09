@@ -26,6 +26,10 @@ class LectureListRepositoryImpl @Inject constructor(
 
     override fun getProgress(id: String): Single<LectureProgressApiItem> {
         return lectureProgressRemoteRepository.fetchLectureListObservable(id)
+            .concatMap { item ->
+                saveProgress(item)
+                return@concatMap Single.just(item)
+            }
     }
 
     override fun saveProgress(progressItem: LectureProgressApiItem): Completable {
