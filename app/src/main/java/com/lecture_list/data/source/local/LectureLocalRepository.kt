@@ -8,7 +8,7 @@ import io.reactivex.rxjava3.core.Single
 interface LectureLocalRepository {
     fun saveList(list: List<LectureListItem>): Completable
 
-    fun saveProgress(item: LectureProgressApiItem): Completable
+    fun saveProgress(apiItem: LectureProgressApiItem): Completable
 
     fun loadList(): Single<List<LectureListDBItem>>
 }

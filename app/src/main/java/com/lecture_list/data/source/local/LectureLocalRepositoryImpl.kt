@@ -2,6 +2,7 @@ package com.lecture_list.data.source.local
 
 import com.lecture_list.data.source.api.lecture.progress.LectureProgressApiItem
 import com.lecture_list.model.LectureListItem
+import io.reactivex.rxjava3.annotations.NonNull
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
@@ -17,12 +18,7 @@ class LectureLocalRepositoryImpl internal constructor(
     }
 
     override fun saveProgress(apiItem: LectureProgressApiItem): Completable {
-        val getComplete = lectureDao.get(apiItem.id)
-
-        return getComplete.flatMapCompletable { item ->
-            item.progress = apiItem.progress
-            return@flatMapCompletable lectureDao.update(item)
-        }.subscribeOn(Schedulers.io())
+        return lectureDao.updateById(apiItem.id, apiItem.progress)
     }
 
     override fun loadList(): Single<List<LectureListDBItem>> {
