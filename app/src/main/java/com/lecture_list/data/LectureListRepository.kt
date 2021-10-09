@@ -11,7 +11,7 @@ import io.reactivex.rxjava3.core.Single
 interface LectureListRepository {
     fun getLectureList(): Single<List<LectureListItem>>
 
-    fun getProgress(): Single<LectureProgressApiItem>
+    fun getProgress(id: String): Single<LectureProgressApiItem>
 
     fun saveLectureList(list: List<LectureListItem>): Completable
 

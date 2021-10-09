@@ -10,6 +10,6 @@
     <!--  LectureListFragment  -->
     <string name="bookmark_explanation">お気に入りに追加</string>
     <string name="teacher_image_desc">講師の画像</string>
-    <string name="progress_fetch_error_display">前回取得の進捗状況</string>
+    <string name="progress_fetch_error_display">進捗状況を取得する</string>
     <string name="lecture_counter">全%s講座</string>
 </resources>

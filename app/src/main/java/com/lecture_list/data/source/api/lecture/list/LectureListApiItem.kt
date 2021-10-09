@@ -16,6 +16,9 @@ data class LectureListApiItem(
     val lastAttemptedTs: Int
 ) {
     fun toModel(): LectureListItem {
-        return LectureListItem(id, name, iconUrl, numberOfTopics, teacherName, lastAttemptedTs)
+        return LectureListItem(
+            id, name, iconUrl, numberOfTopics, teacherName, lastAttemptedTs,
+            progressError = true
+        )
     }
 }

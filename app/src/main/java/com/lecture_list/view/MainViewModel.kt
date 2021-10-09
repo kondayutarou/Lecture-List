@@ -38,7 +38,7 @@ class MainViewModel @Inject constructor(
     }
 
     fun getProgress(id: String) {
-        repository.getProgress().subscribe({
+        repository.getProgress(id).subscribe({
             Timber.d(it.toString())
         }, {
             Timber.d(it.toString())

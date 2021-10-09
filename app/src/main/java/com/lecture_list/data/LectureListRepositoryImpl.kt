@@ -23,8 +23,8 @@ class LectureListRepositoryImpl @Inject constructor(
             .map { list -> list.map { it.toModel() } }.subscribeOn(Schedulers.io())
     }
 
-    override fun getProgress(): Single<LectureProgressApiItem> {
-        TODO("Not yet implemented")
+    override fun getProgress(id: String): Single<LectureProgressApiItem> {
+        return lectureProgressRemoteRepository.fetchLectureListObservable(id)
     }
 
     override fun saveLectureList(list: List<LectureListItem>): Completable {
