@@ -1,6 +1,6 @@
 package com.lecture_list.model
 
-import com.lecture_list.data.LectureListDB
+import com.lecture_list.data.source.local.LectureListDB
 
 data class LectureListItem(
     override val id: String,

@@ -1,4 +1,4 @@
-package com.lecture_list.data
+package com.lecture_list.data.source.local
 
 import androidx.room.*
 import com.lecture_list.model.LectureListItem

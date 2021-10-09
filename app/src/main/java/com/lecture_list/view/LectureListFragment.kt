@@ -79,6 +79,11 @@ class LectureListFragment : Fragment() {
         viewModel.loading.observeOn(AndroidSchedulers.mainThread()).subscribe {
             binding.swipeContainer.isRefreshing = it
         }.addTo(compositeDisposable)
+
+        viewModel.lectureList.observeOn(AndroidSchedulers.mainThread()).subscribe {
+            recyclerAdapter.clear()
+            recyclerAdapter.addItems(it)
+        }.addTo(compositeDisposable)
     }
 
     private val errorDialogPositiveListener: DialogInterface.OnClickListener =

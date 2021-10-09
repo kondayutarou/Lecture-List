@@ -47,6 +47,7 @@ class LectureListRecyclerAdapter(
 
     fun addItems(itemList: List<LectureListItem>) {
         this.itemList.addAll(itemList)
+        this.notifyDataSetChanged()
     }
 
     fun clear() {

@@ -1,8 +1,10 @@
 package com.lecture_list.view
 
 import androidx.lifecycle.ViewModel
+import com.jakewharton.rxrelay3.BehaviorRelay
 import com.jakewharton.rxrelay3.PublishRelay
 import com.lecture_list.data.LectureListRepository
+import com.lecture_list.model.LectureListItem
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.kotlin.addTo
 import timber.log.Timber
@@ -13,6 +15,7 @@ class MainViewModel @Inject constructor(
 ) : ViewModel() {
     private val compositeDisposable = CompositeDisposable()
     val loading = PublishRelay.create<Boolean>()
+    val lectureList = BehaviorRelay.create<List<LectureListItem>>()
 
     fun start() {
         getList()
@@ -20,7 +23,7 @@ class MainViewModel @Inject constructor(
 
     fun getList() {
         repository.getLectureList().subscribe({
-            Timber.d(it.toString())
+            lectureList.accept(it)
             loading.accept(false)
         }, {
             Timber.d(it.toString())

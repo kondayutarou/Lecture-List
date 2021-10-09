@@ -1,7 +1,6 @@
 package com.lecture_list.data.source.local
 
 import androidx.room.*
-import com.lecture_list.data.LectureListDB
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Maybe
 import io.reactivex.rxjava3.core.Single

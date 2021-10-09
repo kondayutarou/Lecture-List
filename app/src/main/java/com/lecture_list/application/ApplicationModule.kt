@@ -11,6 +11,9 @@ import com.lecture_list.data.source.api.lecture.list.LectureListRemoteRepository
 import com.lecture_list.data.source.api.lecture.progress.LectureProgressRemoteRepositoryImpl
 import com.lecture_list.data.source.api.lecture.progress.LectureProgressRemoteRepository
 import com.lecture_list.data.source.local.AppDatabase
+import com.lecture_list.data.source.local.LectureListItemDao
+import com.lecture_list.data.source.local.LectureLocalRepository
+import com.lecture_list.data.source.local.LectureLocalRepositoryImpl
 import com.lecture_list.view.MainViewModel
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -38,29 +41,7 @@ class ApplicationModule {
         return context
     }
 
-    @Singleton
-    @Provides
-    fun provideDb(context: Context): AppDatabase {
-        return Room.databaseBuilder(
-            context,
-            AppDatabase::class.java, "database-name"
-        ).fallbackToDestructiveMigration().build()
-    }
-
-    @Singleton
-    @Provides
-    fun provideLectureListRepository(
-        db: AppDatabase,
-        lectureListRemoteRepository: LectureListRemoteRepository,
-        lectureProgressRemoteRepository: LectureProgressRemoteRepository
-    ): LectureListRepository {
-        return LectureListRepositoryImpl(db, lectureListRemoteRepository, lectureProgressRemoteRepository)
-    }
-
-    @Singleton
-    @Provides
-    fun provideMainViewModel(lectureListRepository: LectureListRepository):
-            MainViewModel = MainViewModel(lectureListRepository)
+    // API
 
     @Singleton
     @Provides
@@ -123,4 +104,19 @@ class ApplicationModule {
     ): LectureProgressRemoteRepository {
         return LectureProgressRemoteRepositoryImpl(retrofit)
     }
+
+    @Singleton
+    @Provides
+    fun provideLectureListRepository(
+        localRepository: LectureLocalRepository,
+        lectureListRemoteRepository: LectureListRemoteRepository,
+        lectureProgressRemoteRepository: LectureProgressRemoteRepository
+    ): LectureListRepository {
+        return LectureListRepositoryImpl(localRepository, lectureListRemoteRepository, lectureProgressRemoteRepository)
+    }
+
+    @Singleton
+    @Provides
+    fun provideMainViewModel(lectureListRepository: LectureListRepository):
+            MainViewModel = MainViewModel(lectureListRepository)
 }
