@@ -14,13 +14,13 @@ interface LectureListItemDao {
     fun getAll(): Single<List<LectureListDBItem>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(vararg lectureListItem: LectureListDBItem): Maybe<Void>
+    fun insert(vararg lectureListItem: LectureListDBItem): Single<Void>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(items: List<LectureListDBItem>): Completable
 
     @Delete
-    fun delete(lectureListItem: LectureListDBItem): Maybe<Void>
+    fun delete(lectureListItem: LectureListDBItem): Single<Void>
 
     @Query("DELETE FROM lecturelistdbitem")
     fun deleteAll(): Completable

@@ -13,6 +13,8 @@ interface LectureListRepository {
 
     fun getProgress(id: String): Single<LectureProgressApiItem>
 
+    fun saveProgress(progressItem: LectureProgressApiItem): Completable
+
     fun saveLectureList(list: List<LectureListItem>): Completable
 
     fun loadLectureList(): Single<List<LectureListItem>>

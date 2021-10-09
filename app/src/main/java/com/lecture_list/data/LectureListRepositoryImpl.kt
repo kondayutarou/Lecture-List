@@ -12,6 +12,7 @@ import javax.inject.Inject
 
 /**
  * Default implementation of [LectureListRepository]. Single entry point for managing lectures' data.
+ * Each repository returns observable with the io scheduler set, so there's no need to set scheduler here.
  */
 class LectureListRepositoryImpl @Inject constructor(
     private val localRepository: LectureLocalRepository,
@@ -20,20 +21,23 @@ class LectureListRepositoryImpl @Inject constructor(
 ) : LectureListRepository {
     override fun getLectureList(): Single<List<LectureListItem>> {
         return lectureListRemoteRepository.fetchLectureListObservable()
-            .map { list -> list.map { it.toModel() } }.subscribeOn(Schedulers.io())
+            .map { list -> list.map { it.toModel() } }
     }
 
     override fun getProgress(id: String): Single<LectureProgressApiItem> {
         return lectureProgressRemoteRepository.fetchLectureListObservable(id)
     }
 
+    override fun saveProgress(progressItem: LectureProgressApiItem): Completable {
+        return localRepository.saveProgress(progressItem)
+    }
+
     override fun saveLectureList(list: List<LectureListItem>): Completable {
-        return localRepository.saveList(list).subscribeOn(Schedulers.io())
+        return localRepository.saveList(list)
     }
 
     override fun loadLectureList(): Single<List<LectureListItem>> {
         return localRepository.loadList().map { list -> list.map { it.toModel() } }
-            .subscribeOn(Schedulers.io())
     }
 
     override fun saveProgress(): Completable {
