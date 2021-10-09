@@ -56,7 +56,7 @@ dependencies {
     implementation 'com.jakewharton.rxrelay3:rxrelay:3.0.1'
 
     // logger
-    implementation 'com.orhanobut:logger:2.1.1'
+    implementation 'com.jakewharton.timber:timber:4.7.1'
 
     // Room
     implementation "androidx.room:room-runtime:$room_version"

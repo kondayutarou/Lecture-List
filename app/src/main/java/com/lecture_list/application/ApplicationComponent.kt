@@ -1,11 +1,9 @@
 package com.lecture_list.application
 
 import android.app.Application
-import com.orhanobut.logger.AndroidLogAdapter
-import com.orhanobut.logger.Logger
-import com.orhanobut.logger.PrettyFormatStrategy
 import com.lecture_list.BuildConfig
 import dagger.hilt.android.HiltAndroidApp
+import timber.log.Timber
 
 @HiltAndroidApp
 class ApplicationComponent : Application() {
@@ -15,14 +13,8 @@ class ApplicationComponent : Application() {
     }
 
     private fun initLogger() {
-        val formatStrategy = PrettyFormatStrategy.newBuilder()
-            .build()
-
-        val logAdapter = object : AndroidLogAdapter(formatStrategy) {
-            override fun isLoggable(priority: Int, tag: String?): Boolean {
-                return BuildConfig.DEBUG
-            }
+        if (BuildConfig.DEBUG) {
+            Timber.plant(Timber.DebugTree())
         }
-        Logger.addLogAdapter(logAdapter)
     }
 }
