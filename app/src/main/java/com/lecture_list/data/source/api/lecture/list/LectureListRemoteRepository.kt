@@ -5,6 +5,6 @@ import com.lecture_list.model.LectureListItem
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Single
 
-interface LectureListApiRepositoryInterface {
+interface LectureListRemoteRepository {
     fun fetchLectureListObservable(): Single<List<LectureListApiItem>>
 }

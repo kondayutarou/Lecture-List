@@ -4,10 +4,12 @@ import android.content.Context
 import androidx.room.Room
 import com.lecture_list.BuildConfig
 import com.lecture_list.R
-import com.lecture_list.data.source.api.lecture.list.LectureListApiRepository
-import com.lecture_list.data.source.api.lecture.list.LectureListApiRepositoryInterface
-import com.lecture_list.data.source.api.lecture.progress.LectureProgressApiRepository
-import com.lecture_list.data.source.api.lecture.progress.LectureProgressApiRepositoryInterface
+import com.lecture_list.data.LectureListRepository
+import com.lecture_list.data.LectureListRepositoryImpl
+import com.lecture_list.data.source.api.lecture.list.LectureListRemoteRepositoryImpl
+import com.lecture_list.data.source.api.lecture.list.LectureListRemoteRepository
+import com.lecture_list.data.source.api.lecture.progress.LectureProgressRemoteRepositoryImpl
+import com.lecture_list.data.source.api.lecture.progress.LectureProgressRemoteRepository
 import com.lecture_list.data.source.local.AppDatabase
 import com.lecture_list.view.MainViewModel
 import com.squareup.moshi.Moshi
@@ -20,7 +22,6 @@ import dagger.hilt.components.SingletonComponent
 import hu.akarnokd.rxjava3.retrofit.RxJava3CallAdapterFactory
 import okhttp3.OkHttpClient
 import javax.inject.Singleton
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import javax.inject.Named
@@ -48,12 +49,18 @@ class ApplicationModule {
 
     @Singleton
     @Provides
-    fun provideMainViewModel(db: AppDatabase,
-                             lectureListApiRepository: LectureListApiRepositoryInterface,
-                             lectureProgressApiRepository: LectureProgressApiRepositoryInterface):
-            MainViewModel {
-        return MainViewModel(db, lectureListApiRepository, lectureProgressApiRepository)
+    fun provideLectureListRepository(
+        db: AppDatabase,
+        lectureListRemoteRepository: LectureListRemoteRepository,
+        lectureProgressRemoteRepository: LectureProgressRemoteRepository
+    ): LectureListRepository {
+        return LectureListRepositoryImpl(db, lectureListRemoteRepository, lectureProgressRemoteRepository)
     }
+
+    @Singleton
+    @Provides
+    fun provideMainViewModel(lectureListRepository: LectureListRepository):
+            MainViewModel = MainViewModel(lectureListRepository)
 
     @Singleton
     @Provides
@@ -100,19 +107,20 @@ class ApplicationModule {
             .build()
     }
 
+    // API repositories
     @Singleton
     @Provides
-    fun provideLectureListApiRepository(
+    fun provideLectureListRemoteRepository(
         retrofit: Retrofit
-    ): LectureListApiRepositoryInterface {
-        return LectureListApiRepository(retrofit)
+    ): LectureListRemoteRepository {
+        return LectureListRemoteRepositoryImpl(retrofit)
     }
 
     @Singleton
     @Provides
-    fun provideLectureProgressApiRepository(
+    fun provideLectureProgressRemoteRepository(
         retrofit: Retrofit
-    ): LectureProgressApiRepositoryInterface {
-        return LectureProgressApiRepository(retrofit)
+    ): LectureProgressRemoteRepository {
+        return LectureProgressRemoteRepositoryImpl(retrofit)
     }
 }

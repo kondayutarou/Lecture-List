@@ -32,14 +32,7 @@ class LectureListRecyclerAdapter(
             .into(holder.binding.teacherImage)
 
         holder.binding.courseInfo = item
-        holder.binding.bookmark.setOnCheckedChangeListener { _, isChecked ->
-            viewModel.changeBookmarkState(isChecked, item)
-        }
-        if (item.progressError) {
-            holder.binding.progressErrorDisplay.visibility = View.VISIBLE
-        } else {
-            holder.binding.progressErrorDisplay.visibility = View.INVISIBLE
-        }
+        holder.binding.viewModel = viewModel
 
         holder.binding.executePendingBindings()
     }

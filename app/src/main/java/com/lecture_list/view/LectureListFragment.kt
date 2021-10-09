@@ -11,15 +11,9 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.lecture_list.R
 import com.lecture_list.databinding.FragmentLectureListBinding
-import com.lecture_list.extension.getDialog
 import com.lecture_list.model.LectureListItem
-import com.orhanobut.logger.Logger
 import dagger.hilt.android.AndroidEntryPoint
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.CompositeDisposable
-import io.reactivex.rxjava3.kotlin.addTo
-import io.reactivex.rxjava3.schedulers.Schedulers
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -44,11 +38,15 @@ class LectureListFragment : Fragment() {
     ): View {
         binding = FragmentLectureListBinding.inflate(inflater, container, false)
         initViews()
-        initRx()
+
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         if (savedInstanceState == null) {
             viewModel.start()
         }
-        return binding.root
     }
 
     private fun initViews() {
@@ -69,44 +67,7 @@ class LectureListFragment : Fragment() {
         }
 
         binding.swipeContainer.setOnRefreshListener {
-            viewModel.loadApi()
         }
-    }
-
-    private fun initRx() {
-        val sharedLectureList = viewModel.lectureListForView
-            .filter { it != null }.share()
-
-        sharedLectureList.observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                Logger.d(it)
-                recyclerAdapter.clear()
-                recyclerAdapter.addItems(it)
-                recyclerAdapter.notifyDataSetChanged()
-                binding.swipeContainer.isRefreshing = false
-            }
-            .addTo(compositeDisposable)
-
-        sharedLectureList
-            // Do not save empty list
-            .filter { it.isNotEmpty() }
-            .observeOn(Schedulers.io())
-            .subscribe {
-                Logger.d(it)
-                viewModel.saveData()
-            }
-            .addTo(compositeDisposable)
-
-        Observable.merge(viewModel.serverErrorRelay, viewModel.networkErrorRelay)
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-                parentActivity.getDialog(
-                    parentActivity.getString(R.string.dialog_api_error), "",
-                    errorDialogPositiveListener
-                )
-                    .show()
-            }
-            .addTo(compositeDisposable)
     }
 
     private val errorDialogPositiveListener: DialogInterface.OnClickListener =
