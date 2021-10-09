@@ -9,11 +9,14 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.jakewharton.rxrelay3.PublishRelay
 import com.lecture_list.R
 import com.lecture_list.databinding.FragmentLectureListBinding
 import com.lecture_list.model.LectureListItem
 import dagger.hilt.android.AndroidEntryPoint
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.kotlin.addTo
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -38,7 +41,7 @@ class LectureListFragment : Fragment() {
     ): View {
         binding = FragmentLectureListBinding.inflate(inflater, container, false)
         initViews()
-
+        initRx()
         return binding.root
     }
 
@@ -67,12 +70,19 @@ class LectureListFragment : Fragment() {
         }
 
         binding.swipeContainer.setOnRefreshListener {
+            viewModel.getList()
+            viewModel.loading.accept(true)
         }
+    }
+
+    private fun initRx() {
+        viewModel.loading.observeOn(AndroidSchedulers.mainThread()).subscribe {
+            binding.swipeContainer.isRefreshing = it
+        }.addTo(compositeDisposable)
     }
 
     private val errorDialogPositiveListener: DialogInterface.OnClickListener =
         DialogInterface.OnClickListener { dialogInterface: DialogInterface, _: Int ->
-            binding.swipeContainer.isRefreshing = false
             dialogInterface.dismiss()
         }
 
