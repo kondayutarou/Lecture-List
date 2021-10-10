@@ -22,7 +22,8 @@ data class LectureListItem(
             teacherName,
             lastAttemptedTs,
             bookmarked,
-            progress
+            progress,
+            progressError
         )
     }
 }

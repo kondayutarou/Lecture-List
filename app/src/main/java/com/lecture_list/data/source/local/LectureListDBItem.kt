@@ -13,7 +13,8 @@ data class LectureListDBItem(
     @ColumnInfo(name = "teacherName") override val teacherName: String,
     @ColumnInfo(name = "lastAttemptedTs") override val lastAttemptedTs: Int,
     @ColumnInfo(name = "bookmarked") override var bookmarked: Boolean,
-    @ColumnInfo(name = "progress") override var progress: Int?
+    @ColumnInfo(name = "progress") override var progress: Int?,
+    @ColumnInfo(name = "progressError") val progressError: Boolean
 ) : LectureListItemInterface {
     fun toModel(): LectureListItem {
         return LectureListItem(
@@ -24,7 +25,8 @@ data class LectureListDBItem(
             teacherName,
             lastAttemptedTs,
             bookmarked,
-            progress
+            progress,
+            progressError
         )
     }
 }
