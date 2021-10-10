@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import com.jakewharton.rxrelay3.BehaviorRelay
 import com.jakewharton.rxrelay3.PublishRelay
 import com.lecture_list.data.LectureListRepository
-import com.lecture_list.data.source.api.lecture.progress.LectureProgressApiItem
 import com.lecture_list.model.LectureListItem
 import io.reactivex.rxjava3.disposables.CompositeDisposable
 import io.reactivex.rxjava3.kotlin.addTo
@@ -24,7 +23,7 @@ class MainViewModel @Inject constructor(
 
     fun getList() {
         repository.getLectureList().subscribe({
-            lectureList.accept(it)
+            lectureList.accept(it.value)
             loading.accept(false)
         }, {
             Timber.d(it.toString())

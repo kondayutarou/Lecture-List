@@ -4,7 +4,10 @@ import com.lecture_list.data.source.api.lecture.list.LectureListRemoteRepository
 import com.lecture_list.data.source.api.lecture.progress.LectureProgressApiItem
 import com.lecture_list.data.source.api.lecture.progress.LectureProgressRemoteRepository
 import com.lecture_list.data.source.local.LectureLocalRepository
+import com.lecture_list.model.ApiError
 import com.lecture_list.model.LectureListItem
+import com.lecture_list.model.StoreValueWithApiError
+import io.reactivex.rxjava3.annotations.NonNull
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
 import javax.inject.Inject
@@ -18,24 +21,25 @@ class LectureListRepositoryImpl @Inject constructor(
     private val lectureListRemoteRepository: LectureListRemoteRepository,
     private val lectureProgressRemoteRepository: LectureProgressRemoteRepository
 ) : LectureListRepository {
-    override fun getLectureList(): Single<List<LectureListItem>> {
+    override fun getLectureList(): @NonNull Single<StoreValueWithApiError<List<LectureListItem>>> {
         return lectureListRemoteRepository.fetchLectureListObservable()
-            .map { list -> list.map { it.toModel() } }
             .doAfterSuccess { list ->
                 // Subscription is disposed when completes.
-                saveLectureList(list).subscribe()
+                saveLectureList(list.value).subscribe()
             }
             // Return database value when api call is unsuccessful.
-            .onErrorResumeNext {
-                return@onErrorResumeNext loadLectureList()
+            .onErrorResumeNext { throwable ->
+                return@onErrorResumeNext loadLectureList().map {
+                    StoreValueWithApiError(it, throwable as ApiError?)
+                }
             }
     }
 
-    override fun getProgress(id: String): Single<LectureProgressApiItem> {
+    override fun getProgress(id: String): @NonNull Single<StoreValueWithApiError<LectureProgressApiItem>> {
         return lectureProgressRemoteRepository.fetchLectureListObservable(id)
             .doAfterSuccess { apiItem ->
                 // Subscription is disposed when completes.
-                saveProgress(apiItem).subscribe()
+                saveProgress(apiItem.value).subscribe()
             }
     }
 
