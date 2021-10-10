@@ -30,6 +30,7 @@ class LectureListRepositoryImpl @Inject constructor(
                 // Subscription is disposed when completes.
                 saveLectureList(list).subscribe()
             }
+            // Return database value when api call is unsuccessful.
             .onErrorResumeNext {
                 return@onErrorResumeNext loadLectureList()
             }
