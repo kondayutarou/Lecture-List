@@ -49,8 +49,7 @@ class LectureListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (savedInstanceState == null) {
-            val isOnline = parentActivity.isInternetAvailable()
-            viewModel.start(isOnline)
+            viewModel.start()
         }
     }
 

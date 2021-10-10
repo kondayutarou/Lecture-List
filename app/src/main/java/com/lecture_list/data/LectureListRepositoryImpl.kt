@@ -5,8 +5,11 @@ import com.lecture_list.data.source.api.lecture.progress.LectureProgressRemoteRe
 import com.lecture_list.data.source.local.LectureLocalRepository
 import com.lecture_list.model.LectureListItem
 import com.lecture_list.data.source.api.lecture.progress.LectureProgressApiItem
+import com.lecture_list.model.ApiNetworkingError
+import com.lecture_list.model.ApiServerError
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.functions.Function
 import io.reactivex.rxjava3.schedulers.Schedulers
 import timber.log.Timber
 import javax.inject.Inject
@@ -26,6 +29,9 @@ class LectureListRepositoryImpl @Inject constructor(
             .doAfterSuccess { list ->
                 // Subscription is disposed when completes.
                 saveLectureList(list).subscribe()
+            }
+            .onErrorResumeNext {
+                return@onErrorResumeNext loadLectureList()
             }
     }
 
