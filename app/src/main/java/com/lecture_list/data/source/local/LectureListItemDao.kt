@@ -68,6 +68,6 @@ interface LectureListItemDao {
      * @param id id of lecture to be updated.
      * @param progress progress of updated lecture.
      */
-    @Query("UPDATE lecturelistdbitem SET progress = :progress WHERE id = :id")
-    fun updateById(id: String, progress: Int): Completable
+    @Query("UPDATE lecturelistdbitem SET progress = :progress, progressError = :progressError WHERE id = :id")
+    fun updateById(id: String, progress: Int, progressError: Boolean): Completable
 }

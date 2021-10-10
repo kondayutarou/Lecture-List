@@ -18,7 +18,7 @@ class LectureLocalRepositoryImpl internal constructor(
     }
 
     override fun saveProgress(apiItem: LectureProgressApiItem): Completable {
-        return lectureDao.updateById(apiItem.id, apiItem.progress)
+        return lectureDao.updateById(apiItem.id, apiItem.progress, false)
     }
 
     override fun loadList(): Single<List<LectureListDBItem>> {
