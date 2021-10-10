@@ -31,6 +31,10 @@ class LectureListRepositoryImpl @Inject constructor(
 
     override fun getProgress(id: String): Single<LectureProgressApiItem> {
         return lectureProgressRemoteRepository.fetchLectureListObservable(id)
+            .doAfterSuccess { apiItem ->
+                // Subscription is disposed when completes.
+                saveProgress(apiItem).subscribe()
+            }
     }
 
     override fun saveProgress(progressItem: LectureProgressApiItem): Completable {

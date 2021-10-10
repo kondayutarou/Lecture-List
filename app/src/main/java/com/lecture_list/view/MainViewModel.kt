@@ -39,17 +39,11 @@ class MainViewModel @Inject constructor(
 
     fun getProgress(id: String) {
         repository.getProgress(id).subscribe({
-            saveProgress(it)
+
         }, {
             Timber.d(it.toString())
         })
             .addTo(compositeDisposable)
-    }
-
-    private fun saveProgress(progressApiItem: LectureProgressApiItem) {
-        repository.saveProgress(progressApiItem).subscribe {
-            Timber.d("save progress completed")
-        }.addTo(compositeDisposable)
     }
 
     fun loadList() {
