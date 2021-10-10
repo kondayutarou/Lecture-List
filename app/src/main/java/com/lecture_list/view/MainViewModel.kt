@@ -33,8 +33,15 @@ class MainViewModel @Inject constructor(
     }
 
     fun getProgress(id: String) {
-        repository.getProgress(id).subscribe({
-
+        repository.getProgress(id).subscribe({ apiItem ->
+            val modifiedValue = lectureList.value?.toMutableList() ?: return@subscribe
+            modifiedValue.map {
+                if (it.id == apiItem.value.id) {
+                    it.progress = apiItem.value.progress
+                    it.progressError = false
+                }
+            }
+            lectureList.accept(modifiedValue)
         }, {
             Timber.d(it.toString())
         })
