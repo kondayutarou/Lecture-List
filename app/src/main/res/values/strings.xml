@@ -14,6 +14,6 @@
     <!--  LectureListFragment  -->
     <string name="bookmark_explanation">Bookmark</string>
     <string name="teacher_image_desc">Image of teacher</string>
-    <string name="progress_fetch_error_display">Progress retrieved previously</string>
+    <string name="progress_fetch_error_display">Tap to get progress</string>
     <string name="lecture_counter">%s lectures in total</string>
 </resources>

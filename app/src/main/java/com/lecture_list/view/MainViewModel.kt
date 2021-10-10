@@ -17,19 +17,14 @@ class MainViewModel @Inject constructor(
     val loading = PublishRelay.create<Boolean>()
     val lectureList = BehaviorRelay.create<List<LectureListItem>>()
 
-    fun start(isOnline: Boolean = false) {
-        if (isOnline) {
-            getList()
-        } else {
-            loadList()
-        }
+    fun start() {
+        getList()
     }
 
     fun getList() {
         repository.getLectureList().subscribe({
-            lectureList.accept(it)
+            lectureList.accept(it.value)
             loading.accept(false)
-            saveList(it)
         }, {
             Timber.d(it.toString())
             loading.accept(false)
@@ -38,26 +33,19 @@ class MainViewModel @Inject constructor(
     }
 
     fun getProgress(id: String) {
-        repository.getProgress().subscribe({
-            Timber.d(it.toString())
+        repository.getProgress(id).subscribe({ apiItem ->
+            val modifiedValue = lectureList.value?.toMutableList() ?: return@subscribe
+            modifiedValue.map {
+                if (it.id == apiItem.value.id) {
+                    it.progress = apiItem.value.progress
+                    it.progressError = false
+                }
+            }
+            lectureList.accept(modifiedValue)
         }, {
             Timber.d(it.toString())
         })
             .addTo(compositeDisposable)
-    }
-
-    private fun saveList(list: List<LectureListItem>) {
-        repository.saveLectureList(list).subscribe {
-            Timber.d("save completed")
-        }.addTo(compositeDisposable)
-    }
-
-    fun loadList() {
-        repository.loadLectureList().subscribe({
-            lectureList.accept(it)
-        }, {
-
-        }).addTo(compositeDisposable)
     }
 
     override fun onCleared() {
