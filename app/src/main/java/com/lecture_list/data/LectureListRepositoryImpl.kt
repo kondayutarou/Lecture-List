@@ -8,6 +8,7 @@ import com.lecture_list.data.source.api.lecture.progress.LectureProgressApiItem
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.schedulers.Schedulers
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -22,6 +23,10 @@ class LectureListRepositoryImpl @Inject constructor(
     override fun getLectureList(): Single<List<LectureListItem>> {
         return lectureListRemoteRepository.fetchLectureListObservable()
             .map { list -> list.map { it.toModel() } }
+            .doAfterSuccess { list ->
+                // Subscription is disposed when completes.
+                saveLectureList(list).subscribe()
+            }
     }
 
     override fun getProgress(id: String): Single<LectureProgressApiItem> {

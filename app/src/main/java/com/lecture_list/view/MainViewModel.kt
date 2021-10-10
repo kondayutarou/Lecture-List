@@ -30,7 +30,6 @@ class MainViewModel @Inject constructor(
         repository.getLectureList().subscribe({
             lectureList.accept(it)
             loading.accept(false)
-            saveList(it)
         }, {
             Timber.d(it.toString())
             loading.accept(false)
@@ -45,12 +44,6 @@ class MainViewModel @Inject constructor(
             Timber.d(it.toString())
         })
             .addTo(compositeDisposable)
-    }
-
-    private fun saveList(list: List<LectureListItem>) {
-        repository.saveLectureList(list).subscribe {
-            Timber.d("save completed")
-        }.addTo(compositeDisposable)
     }
 
     private fun saveProgress(progressApiItem: LectureProgressApiItem) {
