@@ -25,6 +25,7 @@ class MainViewModel @Inject constructor(
         repository.getLectureList().subscribe({
             lectureList.accept(it.value)
             loading.accept(false)
+            it.value.forEach { getProgress(it.id) }
         }, {
             Timber.d(it.toString())
             loading.accept(false)
