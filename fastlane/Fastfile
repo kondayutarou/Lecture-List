@@ -21,17 +21,33 @@ platform :android do
     gradle(task: "test")
   end
 
-  desc "Build a Debug Build"
-  lane :build do
+  desc "Build and Upload a Debug Build"
+  lane :build_and_upload_apk do
     gradle(task: "assemble", build_type: "Debug")
     original_output_path = lane_context[SharedValues::GRADLE_APK_OUTPUT_PATH]
-    updated_output_path = "~/Desktop/Debug-#{get_current_date}.apk"
 
-    sh("mv #{original_output_path} #{updated_output_path}")
-    puts("Apk location: #{updated_output_path}")
+    new_path = rename(original_output_path)
+    sh("mv #{original_output_path} #{new_path}")
+    puts("Apk location: #{new_path}")
+    upload(file_name: new_path)
   end
 
-  def get_current_date
-    Date.today
+  private_lane :upload do |options|
+    upload_to_google_drive(
+      drive_keyfile: 'google_drive_key.json',
+      service_account: true,
+      folder_id: '1DbZ9ARq856nGB4S48ZdAJdjVhzB711bP',
+      upload_files: [options[:file_name]]
+    )
+    puts("#{lane_context[SharedValues::GDRIVE_UPLOADED_FILE_NAMES]} uploaded to #{lane_context[SharedValues::GDRIVE_UPLOADED_FILE_URLS]}")
+  end
+
+  def rename (original_path)
+    pattern = /^(.*\/)(.*.apk)$/
+    match = pattern.match(original_path)
+    apk_folder_path = match[1]
+    apk_name = match[2]
+    new_apk_name = "#{lane_context[SharedValues::GRADLE_BUILD_TYPE]}-#{android_get_version_name}[#{android_get_version_code}]-#{Date.today.strftime("%Y%m%d")}.apk"
+    return apk_folder_path + new_apk_name
   end
 end
