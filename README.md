@@ -32,3 +32,11 @@
 * `Picasso`: 画像取得
 * `Data Binding`: View操作
 * `RxJava`: Asynchronous Task
+
+# ビルド
+
+* `bundle install`
+* `google_drive_key.json`をプロジェクトルートに配置する
+* `bundle exec fastlane build_and_upload_apk`
+  * Debugビルドを作成し、
+  * https://drive.google.com/drive/folders/1DbZ9ARq856nGB4S48ZdAJdjVhzB711bP にアップロードする
