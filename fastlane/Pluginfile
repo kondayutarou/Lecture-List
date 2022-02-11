@@ -4,3 +4,4 @@
 
 gem 'fastlane-plugin-google_drive'
 gem 'fastlane-plugin-versioning_android'
+gem 'fastlane-plugin-bundletool'
