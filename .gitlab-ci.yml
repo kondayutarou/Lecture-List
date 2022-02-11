@@ -18,7 +18,6 @@ build_preparation:
   image: openjdk:11
 
   variables:
-
     # ANDROID_COMPILE_SDK is the version of Android you're compiling with.
     # It should match compileSdkVersion.
     ANDROID_COMPILE_SDK: "32"
@@ -100,4 +99,3 @@ build_preparation:
     - rm -f commandlinetools-linux-${ANDROID_SDK_TOOLS}_latest.zip
     # Cache rbenv root before the home directory gets wiped
     - mv ~/.rbenv rbenv-cache
-  
