@@ -1,10 +1,12 @@
 stages:
   - build_preparation
+  - build_app
 
 variables:
   LANGUAGE: "en_GB:en_US:ja_JA"
   LC_ALL: "en_GB.UTF-8"
   LANG: "en_GB.UTF-8"
+  RUBY_VERSION: "3.1.0"
 
 cache: &global_cache
   paths:
@@ -34,8 +36,6 @@ build_preparation:
     #        commandlinetools-os_type-ANDROID_SDK_TOOLS_latest.zip
     # when the script was last modified for latest compileSdkVersion, it was which is written down below
     ANDROID_SDK_TOOLS: "8092744"
-
-    RUBY_VERSION: "3.1.0"
 
   # Packages installation before running script
   before_script:
@@ -75,7 +75,6 @@ build_preparation:
         unzip commandlinetools-linux-${ANDROID_SDK_TOOLS}_latest.zip -d cmdline-tools
       fi
     - export ANDROID_HOME=/usr/lib/android-sdk
-    - export PATH=$ANDROID_HOME/cmdline-tools/cmdline-tools/bin/:$PATH
 
     # Nothing fancy here, just checking sdkManager version
     - cmdline-tools/cmdline-tools/bin/sdkmanager --version
@@ -101,3 +100,26 @@ build_preparation:
     - rm -f commandlinetools-linux-${ANDROID_SDK_TOOLS}_latest.zip
     # Cache rbenv root before the home directory gets wiped
     - mv ~/.rbenv rbenv-cache
+
+build_app:
+  stage: build_app
+
+  variables:
+    GOOGLE_DRIVE_KEY: $google_drive_key
+
+  cache:
+    # inherit all global cache settings
+    <<: *global_cache
+    # override the policy
+    policy: pull
+  
+  before_script:
+    - touch google_drive_key.json
+    - echo ${GOOGLE_DRIVE_KEY} > google_drive_key.json
+    - mv rbenv-cache ~/.rbenv
+    - export PATH="$HOME/.rbenv/bin:$PATH"
+    - eval "$(rbenv init -)"
+    - rbenv global ${RUBY_VERSION}
+
+  script:
+    - bundle exec fastlane build_and_upload_apk
