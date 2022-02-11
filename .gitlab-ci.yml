@@ -7,6 +7,10 @@ variables:
 
 build:
   stage: build
+  cache:
+    paths:
+      - /root/.rbenv/
+      - /cmdline-tools/
   image: openjdk:11
   variables:
     # ANDROID_COMPILE_SDK is the version of Android you're compiling with.
@@ -26,7 +30,14 @@ build:
   # Packages installation before running script
   before_script:
     - apt-get --quiet update --yes
-    - apt-get --quiet install --yes wget tar unzip lib32stdc++6 lib32z1
+    - apt-get --quiet install --yes wget tar unzip lib32stdc++6 lib32z1 libssl-dev zlib1g-dev build-essential
+
+    - git clone https://github.com/rbenv/rbenv.git ~/.rbenv
+    - git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
+    - export PATH="$HOME/.rbenv/bin:$PATH"
+    - eval "$(rbenv init -)"
+    - rbenv install 3.1.0
+    - rbenv global 3.1.0
 
     - apt-get install android-sdk --yes
     - export ANDROID_HOME=/usr/lib/android-sdk
@@ -50,4 +61,5 @@ build:
   after_script:
     # Not necessary, but just for surity
     - chmod +x ./gradlew
+    - rm commandlinetools-linux-${ANDROID_SDK_TOOLS}_latest.zip
   
