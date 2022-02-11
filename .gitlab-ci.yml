@@ -1,19 +1,20 @@
 stages:
-  - build
+  - build_preparation
 
 variables:
   LANGUAGE: "en_GB:en_US:ja_JA"
   LC_ALL: "en_GB.UTF-8"
   LANG: "en_GB.UTF-8"
 
-build:
-  stage: build
+build_preparation:
+  stage: build_preparation
 
   cache:
     paths:
       - rbenv-cache/
       - cmdline-tools/
-      
+      - vendor/
+
   image: openjdk:11
 
   variables:
@@ -47,6 +48,7 @@ build:
         git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
       else
         mv rbenv-cache ~/.rbenv
+        echo "Using cached rbenv"
       fi
     - export PATH="$HOME/.rbenv/bin:$PATH"
     - eval "$(rbenv init -)"
@@ -55,7 +57,14 @@ build:
         rbenv install ${RUBY_VERSION}
       fi
     - rbenv global ${RUBY_VERSION}
-    - bundle install
+    # Set up bundler
+    - >
+      if [ ! -d vendor/ ]; then
+        bundle config set --local path 'vendor/bundle'
+        bundle install
+      else
+        echo "Using cached gem"
+      fi
 
     # Install or restore Android Studio
     - >
@@ -77,6 +86,8 @@ build:
         cmdline-tools/cmdline-tools/bin/sdkmanager --sdk_root=${ANDROID_HOME} "platforms;android-${ANDROID_COMPILE_SDK}"
         cmdline-tools/cmdline-tools/bin/sdkmanager --sdk_root=${ANDROID_HOME} "platform-tools"
         cmdline-tools/cmdline-tools/bin/sdkmanager --sdk_root=${ANDROID_HOME} "build-tools;${ANDROID_BUILD_TOOLS}"
+      else
+        echo "Using cached command line tools"
       fi
 
   script:
