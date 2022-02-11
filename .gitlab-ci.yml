@@ -10,7 +10,7 @@ build:
   stage: build
   cache:
     paths:
-      - ~/.rbenv
+      - rbenv-cache/
       - cmdline-tools/
   image: openjdk:11
   variables:
@@ -33,17 +33,24 @@ build:
     - apt-get --quiet update --yes
     - apt-get --quiet install --yes wget tar unzip lib32stdc++6 lib32z1 libssl-dev zlib1g-dev build-essential
 
+    # Install or restore ruby
     - >
-      if [ ! -d ~/.rbenv ]; then
+      if [ ! -d rbenv-cache ]; then
         git clone https://github.com/rbenv/rbenv.git ~/.rbenv
         git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
+      else
+        mv rbenv-cache ~/.rbenv
       fi
     - export PATH="$HOME/.rbenv/bin:$PATH"
     - eval "$(rbenv init -)"
-    - rbenv install 3.1.0
+    - >
+      if [ ! -d /root/.rbenv/versions/3.1.0 ]; then
+        rbenv install 3.1.0
+      fi
     - rbenv global 3.1.0
     - bundle install
 
+    # Install or restore Android Studio
     - >
       if [ ! -d cmdline-tools/ ]; then
         apt-get install android-sdk --yes
@@ -72,4 +79,6 @@ build:
     # Not necessary, but just for surity
     - chmod +x ./gradlew
     - rm -f commandlinetools-linux-${ANDROID_SDK_TOOLS}_latest.zip
+    # Cache rbenv root before the home directory gets wiped
+    - mv ~/.rbenv rbenv-cache
   
