@@ -38,5 +38,8 @@
 * `bundle install`
 * `google_drive_key.json`をプロジェクトルートに配置する
 * `bundle exec fastlane build_and_upload_apk`
-  * Debugビルドを作成し、
+  * Debug Apkビルドを作成し、
+  * https://drive.google.com/drive/folders/1DbZ9ARq856nGB4S48ZdAJdjVhzB711bP にアップロードする
+* `bundle exec fastlane build_and_upload_aab`
+  * Debug Aab+Apkビルドを作成し、zipにして
   * https://drive.google.com/drive/folders/1DbZ9ARq856nGB4S48ZdAJdjVhzB711bP にアップロードする
