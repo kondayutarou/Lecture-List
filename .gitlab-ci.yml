@@ -1,0 +1,84 @@
+stages:
+  - build
+
+variables:
+  LANGUAGE: "en_GB:en_US:ja_JA"
+  LC_ALL: "en_GB.UTF-8"
+  LANG: "en_GB.UTF-8"
+
+build:
+  stage: build
+  cache:
+    paths:
+      - rbenv-cache/
+      - cmdline-tools/
+  image: openjdk:11
+  variables:
+    # ANDROID_COMPILE_SDK is the version of Android you're compiling with.
+    # It should match compileSdkVersion.
+    ANDROID_COMPILE_SDK: "32"
+
+    # ANDROID_BUILD_TOOLS is the version of the Android build tools you are using.
+    # It should match buildToolsVersion.
+    ANDROID_BUILD_TOOLS: "30.0.3"
+
+    # It's what version of the command line tools we're going to download from the official site.
+    # Official Site-> https://developer.android.com/studio/index.html
+    # There, look down below at the cli tools only, sdk tools package is of format:
+    #        commandlinetools-os_type-ANDROID_SDK_TOOLS_latest.zip
+    # when the script was last modified for latest compileSdkVersion, it was which is written down below
+    ANDROID_SDK_TOOLS: "8092744"
+  # Packages installation before running script
+  before_script:
+    - apt-get --quiet update --yes
+    - apt-get --quiet install --yes wget tar unzip lib32stdc++6 lib32z1 libssl-dev zlib1g-dev build-essential
+
+    # Install or restore ruby
+    - >
+      if [ ! -d rbenv-cache ]; then
+        git clone https://github.com/rbenv/rbenv.git ~/.rbenv
+        git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
+      else
+        mv rbenv-cache ~/.rbenv
+      fi
+    - export PATH="$HOME/.rbenv/bin:$PATH"
+    - eval "$(rbenv init -)"
+    - >
+      if [ ! -d /root/.rbenv/versions/3.1.0 ]; then
+        rbenv install 3.1.0
+      fi
+    - rbenv global 3.1.0
+    - bundle install
+
+    # Install or restore Android Studio
+    - >
+      if [ ! -d cmdline-tools/ ]; then
+        apt-get install android-sdk --yes
+        wget https://dl.google.com/android/repository/commandlinetools-linux-${ANDROID_SDK_TOOLS}_latest.zip
+        unzip commandlinetools-linux-${ANDROID_SDK_TOOLS}_latest.zip -d cmdline-tools
+      fi
+    - export ANDROID_HOME=/usr/lib/android-sdk
+    - export PATH=$ANDROID_HOME/cmdline-tools/cmdline-tools/bin/:$PATH
+
+    # Nothing fancy here, just checking sdkManager version
+    - cmdline-tools/cmdline-tools/bin/sdkmanager --version
+
+    # use yes to accept all licenses
+    - >
+      if [ ! -d cmdline-tools/ ]; then
+        yes | cmdline-tools/cmdline-tools/bin/sdkmanager --sdk_root=${ANDROID_HOME} --licenses || true
+        cmdline-tools/cmdline-tools/bin/sdkmanager --sdk_root=${ANDROID_HOME} "platforms;android-${ANDROID_COMPILE_SDK}"
+        cmdline-tools/cmdline-tools/bin/sdkmanager --sdk_root=${ANDROID_HOME} "platform-tools"
+        cmdline-tools/cmdline-tools/bin/sdkmanager --sdk_root=${ANDROID_HOME} "build-tools;${ANDROID_BUILD_TOOLS}"
+      fi
+
+  script:
+    - ls /usr/local
+
+  after_script:
+    # Not necessary, but just for surity
+    - chmod +x ./gradlew
+    - rm -f commandlinetools-linux-${ANDROID_SDK_TOOLS}_latest.zip
+    # Cache rbenv root before the home directory gets wiped
+    - mv ~/.rbenv rbenv-cache
+  
