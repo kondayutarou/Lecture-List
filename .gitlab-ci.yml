@@ -2,15 +2,16 @@ stages:
   - build
 
 variables:
-  LC_ALL: "en_US.UTF-8"
-  LANG: "en_US.UTF-8"
+  LANGUAGE: "en_GB:en_US:ja_JA"
+  LC_ALL: "en_GB.UTF-8"
+  LANG: "en_GB.UTF-8"
 
 build:
   stage: build
   cache:
     paths:
-      - /root/.rbenv/
-      - /cmdline-tools/
+      - ~/.rbenv
+      - cmdline-tools/
   image: openjdk:11
   variables:
     # ANDROID_COMPILE_SDK is the version of Android you're compiling with.
@@ -32,34 +33,43 @@ build:
     - apt-get --quiet update --yes
     - apt-get --quiet install --yes wget tar unzip lib32stdc++6 lib32z1 libssl-dev zlib1g-dev build-essential
 
-    - git clone https://github.com/rbenv/rbenv.git ~/.rbenv
-    - git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
+    - >
+      if [ ! -d ~/.rbenv ]; then
+        git clone https://github.com/rbenv/rbenv.git ~/.rbenv
+        git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
+      fi
     - export PATH="$HOME/.rbenv/bin:$PATH"
     - eval "$(rbenv init -)"
     - rbenv install 3.1.0
     - rbenv global 3.1.0
+    - bundle install
 
-    - apt-get install android-sdk --yes
+    - >
+      if [ ! -d cmdline-tools/ ]; then
+        apt-get install android-sdk --yes
+        wget https://dl.google.com/android/repository/commandlinetools-linux-${ANDROID_SDK_TOOLS}_latest.zip
+        unzip commandlinetools-linux-${ANDROID_SDK_TOOLS}_latest.zip -d cmdline-tools
+      fi
     - export ANDROID_HOME=/usr/lib/android-sdk
-    - wget https://dl.google.com/android/repository/commandlinetools-linux-${ANDROID_SDK_TOOLS}_latest.zip
-    - unzip commandlinetools-linux-${ANDROID_SDK_TOOLS}_latest.zip -d cmdline-tools
     - export PATH=$ANDROID_HOME/cmdline-tools/cmdline-tools/bin/:$PATH
 
     # Nothing fancy here, just checking sdkManager version
     - cmdline-tools/cmdline-tools/bin/sdkmanager --version
 
     # use yes to accept all licenses
-    - yes | cmdline-tools/cmdline-tools/bin/sdkmanager --sdk_root=${ANDROID_HOME} --licenses || true
-    - cmdline-tools/cmdline-tools/bin/sdkmanager --sdk_root=${ANDROID_HOME} "platforms;android-${ANDROID_COMPILE_SDK}"
-    - cmdline-tools/cmdline-tools/bin/sdkmanager --sdk_root=${ANDROID_HOME} "platform-tools"
-    - cmdline-tools/cmdline-tools/bin/sdkmanager --sdk_root=${ANDROID_HOME} "build-tools;${ANDROID_BUILD_TOOLS}"
+    - >
+      if [ ! -d cmdline-tools/ ]; then
+        yes | cmdline-tools/cmdline-tools/bin/sdkmanager --sdk_root=${ANDROID_HOME} --licenses || true
+        cmdline-tools/cmdline-tools/bin/sdkmanager --sdk_root=${ANDROID_HOME} "platforms;android-${ANDROID_COMPILE_SDK}"
+        cmdline-tools/cmdline-tools/bin/sdkmanager --sdk_root=${ANDROID_HOME} "platform-tools"
+        cmdline-tools/cmdline-tools/bin/sdkmanager --sdk_root=${ANDROID_HOME} "build-tools;${ANDROID_BUILD_TOOLS}"
+      fi
+
   script:
-    - ls $ANDROID_HOME
-    - ls
-    - ls $ANDROID_HOME/tools/
-    - ls $ANDROID_HOME/tools/bin/
+    - ls /usr/local
+
   after_script:
     # Not necessary, but just for surity
     - chmod +x ./gradlew
-    - rm commandlinetools-linux-${ANDROID_SDK_TOOLS}_latest.zip
+    - rm -f commandlinetools-linux-${ANDROID_SDK_TOOLS}_latest.zip
   
