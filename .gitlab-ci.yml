@@ -13,10 +13,11 @@ cache: &global_cache
     - vendor/
   policy: pull-push
 
+default:
+  image: openjdk:11
+
 build_preparation:
   stage: build_preparation
-
-  image: openjdk:11
 
   variables:
     # ANDROID_COMPILE_SDK is the version of Android you're compiling with.
