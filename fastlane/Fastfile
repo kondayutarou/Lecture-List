@@ -21,15 +21,28 @@ platform :android do
     gradle(task: "test")
   end
 
-  desc "Build and Upload a Debug Build"
+  desc "Build and upload a Debug apk build"
   lane :build_and_upload_apk do
     gradle(task: "assemble", build_type: "Debug")
     original_output_path = lane_context[SharedValues::GRADLE_APK_OUTPUT_PATH]
 
-    new_path = rename(original_output_path)
+    new_path = rename(original_output_path, true)[0]
     sh("mv #{original_output_path} #{new_path}")
     puts("Apk location: #{new_path}")
-    upload(file_name: new_path)
+    upload(file_name: [new_path])
+    clean()
+  end
+
+  desc "Build and upload a zip file of debug aab and apk"
+  lane :build_and_upload_aab do
+    gradle(task: "bundle", build_type: "Debug")
+    original_output_path = lane_context[SharedValues::GRADLE_AAB_OUTPUT_PATH]
+
+    new_apk_path, new_aab_path, folder_path = rename(original_output_path, false)
+    sh("mv #{original_output_path} #{new_aab_path}")
+    puts("Aab location: #{new_aab_path}")
+    convert_aab_to_apk(aab_path: new_aab_path, apk_path: new_apk_path, folder_path: folder_path)
+    clean()
   end
 
   private_lane :upload do |options|
@@ -37,17 +50,48 @@ platform :android do
       drive_keyfile: 'google_drive_key.json',
       service_account: true,
       folder_id: '1DbZ9ARq856nGB4S48ZdAJdjVhzB711bP',
-      upload_files: [options[:file_name]]
+      upload_files: options[:file_name]
     )
     puts("#{lane_context[SharedValues::GDRIVE_UPLOADED_FILE_NAMES]} uploaded to #{lane_context[SharedValues::GDRIVE_UPLOADED_FILE_URLS]}")
   end
 
-  def rename (original_path)
-    pattern = /^(.*\/)(.*.apk)$/
+  private_lane :convert_aab_to_apk do |options|
+    bundletool(
+      aab_path: options[:aab_path],
+      apk_output_path: options[:apk_path],
+      verbose: true
+    )
+    zip_path = mkdir_and_zip(folder_path: options[:folder_path], apk_path: options[:apk_path], aab_path: options[:aab_path])
+    upload(file_name: [zip_path])
+  end
+
+  private_lane :mkdir_and_zip do |options|
+    zip_path = "#{options[:aab_path]}-output-collection"
+    sh("mkdir #{zip_path}")
+    sh("mv #{options[:apk_path]} #{zip_path}")
+    sh("mv #{options[:aab_path]} #{zip_path}")
+    zip(path: zip_path, output_path: "#{zip_path}.zip")
+    "#{zip_path}.zip" 
+  end
+
+  desc "Clean build directory"
+  lane :clean do
+    gradle(task: "clean")
+  end
+
+  def rename (original_path, is_apk)
+    if is_apk
+      pattern = /^(.*\/)(.*.apk)$/
+    else
+      pattern = /^(.*\/)(.*.aab)$/
+    end
     match = pattern.match(original_path)
     apk_folder_path = match[1]
     apk_name = match[2]
+    
     new_apk_name = "#{lane_context[SharedValues::GRADLE_BUILD_TYPE]}-#{android_get_version_name}[#{android_get_version_code}]-#{Date.today.strftime("%Y%m%d")}.apk"
-    return apk_folder_path + new_apk_name
+    new_aab_name = "#{lane_context[SharedValues::GRADLE_BUILD_TYPE]}-#{android_get_version_name}[#{android_get_version_code}]-#{Date.today.strftime("%Y%m%d")}.aab"
+    
+    return [(apk_folder_path + new_apk_name), (apk_folder_path + new_aab_name), apk_folder_path]
   end
 end
