@@ -74,6 +74,7 @@ fastlane/screenshots
 fastlane/test_output
 fastlane/readme.md
 google_drive_key.json
+vendor/
 
 # Version control
 vcs.xml
