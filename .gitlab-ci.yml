@@ -59,6 +59,8 @@ build_preparation:
       fi
     - rbenv global ${RUBY_VERSION}
     # Set up bundler
+    - rbenv exec gem install bundler
+    - rbenv rehash
     - >
       if [ ! -d vendor/ ]; then
         bundle config set --local path 'vendor/bundle'
