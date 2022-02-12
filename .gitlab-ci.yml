@@ -6,18 +6,33 @@ services:
 stages:
   - build
 
+cache: &global_cache
+  key:
+    files:
+      - gradle/wrapper/gradle-wrapper.properties
+  paths:
+    - gradle-cache/caches/
+    - gradle-cache/notifications/
+    - gradle-cache/wrapper/
+
 variables:
   LANGUAGE: "en_GB:en_US:ja_JA"
   LC_ALL: "en_GB.UTF-8"
   LANG: "en_GB.UTF-8"
   GOOGLE_DRIVE_KEY: $google_drive_key
+  CLEAR_CACHE: $clear_cache
 
 build:
   stage: build
   before_script:
     - touch google_drive_key.json
     - echo "$GOOGLE_DRIVE_KEY" | xxd -r -p - > google_drive_key.json
+    - if [ ! -d gradle-cache/caches/ ]; then mv gradle-cache/caches/ gradle/; fi
+    - if [ ! -d gradle-cache/notifications/ ]; then mv gradle-cache/notifications/ gradle/; fi
+    - if [ ! -d gradle-cache/wrapper/ ]; then mv gradle-cache/wrapper/ gradle/; fi
   script:
     - ls
     - bundle install
     - bundle exec fastlane build_and_upload_apk
+  after_script:
+    - cp -r $HOME/.gradle/ gradle-cache
